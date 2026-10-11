@@ -1656,15 +1656,27 @@ async function fccEnviarExV15(btn){
  diametro:d.diametro.trim(),material:d.material.trim(),novedad:d.novedad.trim(),
  tramos:fccTramosExV9.map(t=>({codigo:t.codigo.trim(),mhArriba:t.mhArriba.trim(),mhAbajo:t.mhAbajo.trim(),ml:Number(t.longitud),aptoCCTV:'SI',observacion:t.observacion.trim()})),
  confirmacion:true,origen:'INGRESO_EXCEPCIONAL'};
+ const win=window.open('','_blank');
+ if(win){
+  win.document.write('<html><head><title>Generando FALC-XX…</title></head><body style="font-family:sans-serif;padding:24px;color:#333"><h2>Generando FALC-XX…</h2><p>Esperando confirmación del Motor.</p></body></html>');
+  win.document.close();
+ }
  btn.disabled=true;o.textContent='Enviando declaración al motor…';
  try{
   const r=await v932Jsonp('falcIngresoExcepcional',{token:V8.token,payload:JSON.stringify(payload),actionId:'FEX-'+Date.now()});
-  if(!r||r.ok!==true||!r.idRegistro||r.alertaGenerada!==true)throw Error(r?.error||'El motor no confirmó registro y alerta. Verificar antes de reintentar.');
+  if(!r||r.ok!==true||!r.idRegistro||r.alertaGenerada!==true){
+   if(win)win.close();
+   throw Error(r?.error||'El motor no confirmó registro y alerta. Verificar antes de reintentar.');
+  }
   o.style.cssText='padding:14px;border:1px solid #64748b;border-radius:9px';
   o.textContent='DECLARACIÓN REGISTRADA · Referencia: '+r.idRegistro+' · Alerta de verificación generada. Pendiente de revisión humana.';
   btn.textContent='Registrado';btn.disabled=true;
-  falcImprimirV16(payload,r.idRegistro,'INGRESO EXCEPCIONAL');
- }catch(e){o.style.cssText='padding:14px;border:2px solid #b91c1c;border-radius:9px;color:#991b1b';o.textContent='SIN CONFIRMACIÓN: '+e.message;btn.disabled=false;}
+  falcImprimirV16(payload,r.idRegistro,'INGRESO EXCEPCIONAL',win);
+ }catch(e){
+  if(win)win.close();
+  o.style.cssText='padding:14px;border:2px solid #b91c1c;border-radius:9px;color:#991b1b';
+  o.textContent='SIN CONFIRMACIÓN: '+e.message;btn.disabled=false;
+ }
 }
 
 
