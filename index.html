@@ -1793,7 +1793,9 @@ function falcCCTecnicos(id,t){
  const DIAMETROS=['150','200','250','300','400','+400'];
  const MATERIALES=['PVC','Gres','Asbesto-cemento','HF','Concreto'];
  const opts=(arr,sel)=>'<option value="">Seleccionar…</option>'+arr.map(x=>'<option value="'+esc(x)+'"'+(String(sel||'')===String(x)?' selected':'')+'>'+esc(x)+'</option>').join('');
- return '<div class="v932-row"><div><label>MH arriba</label><input data-falc="'+esc(id)+'" data-campo="mhArriba" value="'+esc(t.mhArriba||'')+'"></div><div><label>MH abajo</label><input data-falc="'+esc(id)+'" data-campo="mhAbajo" value="'+esc(t.mhAbajo||'')+'"></div></div>'
+ const pat='^C\\d{1,2}-\\d{1,4}$';
+ const tip='Formato: C + 1-2 dígitos + "-" + 1-4 dígitos. Ej: C1-01, C12-1234, C9-99';
+ return '<div class="v932-row"><div><label>MH arriba</label><input data-falc="'+esc(id)+'" data-campo="mhArriba" value="'+esc(t.mhArriba||'')+'" pattern="'+pat+'" title="'+esc(tip)+'" placeholder="C1-01" maxlength="8"></div><div><label>MH abajo</label><input data-falc="'+esc(id)+'" data-campo="mhAbajo" value="'+esc(t.mhAbajo||'')+'" pattern="'+pat+'" title="'+esc(tip)+'" placeholder="C1-02" maxlength="8"></div></div>'
   +'<label>Diámetro</label><select data-falc="'+esc(id)+'" data-campo="diametro">'+opts(DIAMETROS,t.diametro)+'</select>'
   +'<label>Material</label><select data-falc="'+esc(id)+'" data-campo="material">'+opts(MATERIALES,t.material)+'</select>'
   +'<label>Barrio</label><input data-falc="'+esc(id)+'" data-campo="barrio" value="'+esc(t.barrio||'')+'">';
