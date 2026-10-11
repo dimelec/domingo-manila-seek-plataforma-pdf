@@ -1689,7 +1689,7 @@ async function fccEnviarExV15(btn){
  // La nota separadora identifica el final de los registros sin ocupar una fila de datos.
  const filasLibres=Math.max(0,8-tr.length);
  const blancos=Array.from({length:filasLibres},()=>'<tr class="fila-libre">'+Array.from({length:10},()=>'<td>&nbsp;</td>').join('')+'</tr>').join('');
- const tabla=filas+'<tr class="fin-registros"><td colspan="10">— FIN DE REGISTROS DE JORNADA —</td></tr>'+blancos;
+ const tabla=filas+'<tr class="fin-registros"><td colspan="10">— FIN DE REGISTROS —</td></tr>'+blancos;
  const pagina=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>FALC-XX · ${esc(referencia)}</title><style>
  @page{size:A4 landscape;margin:9mm}*{box-sizing:border-box}body{font:9px Arial,Helvetica,sans-serif;color:#232b31;margin:0;background:white}
  .documento{width:100%;margin:0 auto}.cabecera{display:grid;grid-template-columns:16% 68% 16%;height:18mm;border:1px solid #6e7a81;align-items:stretch}
@@ -1713,7 +1713,7 @@ async function fccEnviarExV15(btn){
  <div class="campos"><div class="campo"><b>FECHA</b><span>${esc(fecha)}</span></div><div class="campo"><b>PLACA</b><span>${esc(id.placa)}</span></div><div class="campo"><b>JORNADA</b><span>${esc(id.jornada)}</span></div><div class="campo destacado"><b>BARRIO</b><span>${esc(id.barrio)}</span></div></div>
  <div class="campos segunda"><div class="campo"><b>CONTRATISTA</b><span>${esc(datos.contratista||'')}</span></div><div class="campo"><b>EQUIPO PRESIÓN / SUCCIÓN</b><span>${esc(id.placa)}</span></div><div class="campo"><b>OPERADOR / TAREA</b><span>${esc(datos.operador||'')}</span></div></div>
  <div class="seccion"><span>REGISTRO CRONOLÓGICO DE TRAMOS</span><span>FALC-XX</span></div>
- <table><colgroup>${[22,22,33,24,24,22,22,27,23,60].map(v=>'<col style="width:'+(100*v/279).toFixed(3)+'%">').join('')}</colgroup><thead><tr>${['H. INICIO','H. FINAL','TRAMO','MH ARRIBA','MH ABAJO','DIÁMETRO','MATERIAL','ML LIMPIADOS','APTO CCTV','OBSERVACIÓN'].map(h=>'<th>'+h+'</th>').join('')}</tr></thead><tbody>${tabla}</tbody></table>
+ <table><colgroup>${[22,22,33,24,24,22,22,27,23,60].map(v=>'<col style="width:'+(100*v/279).toFixed(3)+'%">').join('')}</colgroup><thead><tr>${['H. INICIO','H. FINAL','TRAMO','C ARRIBA','c ABAJO','DIÁMETRO','MATERIAL','LONGITUD','APTO CCTV','OBSERVACIÓN'].map(h=>'<th>'+h+'</th>').join('')}</tr></thead><tbody>${tabla}</tbody></table>
  <section class="novedades"><b>NOVEDADES / CONTINUIDAD OPERATIVA</b>${esc(datos.novedad||'Sin novedades declaradas')}</section>
  <div class="resumen"><div><b>TRAMOS DECLARADOS</b><p>${tr.length}</p></div><div><b>AGUA (m³)</b><p>${esc(datos.aguaM3||'')}</p></div><div><b>RESPONSABLE</b><p>${esc(datos.operador||'')}</p></div><div><b>VERIFICACIÓN</b><p>PENDIENTE</p></div></div>
  <footer class="pie">ORIGEN: ${esc(tipo)} · REFERENCIA: ${esc(referencia)} · DECLARACIÓN RECIBIDA · PENDIENTE DE VERIFICACIÓN</footer>
