@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>#_Mtto_Preventivo · Roles V9.26</title>
+<meta name="theme-color" content="#7c3aed">
+<style>
+:root{
+  --bg:#0d0f14; --card:#191c24; --card2:#212531; --line:#2d3340;
+  --text:#f5f3ff; --sub:#aaa4bd; --accent:#7c3aed; --accent2:#a78bfa;
+  --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --radius:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:40px}
+.screen{display:none;padding:16px;max-width:480px;margin:0 auto;min-height:100vh}
+.screen.active{display:block}
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:13px;color:var(--sub);margin:0 0 20px;font-weight:500}
+h3{font-size:15px;margin:0 0 12px;font-weight:700}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+
+/* ===== Selector de rol V8 ===== */
+.brand-kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent2);font-weight:800}
+.brand-title{font-size:26px;font-weight:850;line-height:1.05;margin:5px 0 6px}
+.brand-sub{font-size:13px;color:var(--sub);line-height:1.4}
+.access-hero{padding:22px 18px;background:radial-gradient(circle at 85% 0%,rgba(124,58,237,.28),transparent 42%),linear-gradient(145deg,#191c24,#15141f);border:1px solid #39304f}
+.role-grid-v8{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.role-card-v8{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:15px 12px;text-align:left;min-height:92px;cursor:pointer;font-family:inherit}
+.role-card-v8.primary{grid-column:1/3;border-color:var(--accent);background:linear-gradient(135deg,#312052,#241c38)}
+.role-card-v8 .r-ic{font-size:23px;display:block;margin-bottom:7px}
+.role-card-v8 b{display:block;font-size:15px}
+.role-card-v8 small{display:block;color:var(--sub);font-size:11px;margin-top:4px;line-height:1.3}
+.identity-pill{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 12px;margin-top:12px}
+.identity-pill input{padding:8px 4px!important;border:0!important;background:transparent!important;font-size:15px!important;width:100%;color:var(--text);font-family:inherit}
+#v8-trigger-rol{cursor:pointer;user-select:none;padding:4px 6px;border-radius:8px;transition:background .15s}
+#v8-trigger-rol:active{background:rgba(124,58,237,.18)}
+
+/* ===== Gestor multirrol ===== */
+.v8-topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.v8-user{font-size:12px;color:var(--sub)}
+.v8-user strong{color:var(--text)}
+.v8-tabs{display:flex;gap:7px;overflow:auto;margin:0 -2px 12px;padding:2px 2px 5px}
+.v8-tab{white-space:nowrap;border:1px solid var(--line);background:var(--card2);color:var(--sub);border-radius:999px;padding:9px 12px;font-size:12px;font-weight:750;font-family:inherit}
+.v8-tab.on{background:var(--accent);border-color:var(--accent);color:white}
+.v8-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.v8-kpi{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.v8-kpi .n{font-size:23px;font-weight:850}
+.v8-kpi .t{font-size:11px;color:var(--sub);margin-top:2px}
+.v8-item{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:9px}
+.v8-item-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.v8-item-title{font-weight:800;font-size:14px}
+.v8-item-meta{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.4}
+.v8-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.v8-action{border:1px solid #5b477c;background:#2a203c;color:#eee7ff;border-radius:9px;padding:9px 10px;font-size:12px;font-weight:750;font-family:inherit}
+.v8-action.good{border-color:#276b47;background:#173626;color:#b9f6d0}
+.v8-action.warn{border-color:#8b621d;background:#3b2c14;color:#fde2a5}
+.v8-action.bad{border-color:#8c3b45;background:#3d1e25;color:#fecdd3}
+.v8-empty{padding:20px 12px;text-align:center;color:var(--sub);font-size:13px}
+.context-strip{border-left:3px solid var(--accent2);padding:8px 10px;background:#211b2c;border-radius:0 9px 9px 0;margin-top:9px;font-size:12px}
+.mini-status{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;background:var(--card2);border:1px solid var(--line)}
+.mini-status.bad{color:var(--bad);border-color:var(--bad)}
+.mini-status.good{color:var(--good);border-color:var(--good)}
+.mini-status.warn{color:var(--warn);border-color:var(--warn)}
+
+/* ===== Bitácora operador ===== */
+label{display:block;font-size:14px;color:var(--sub);margin:16px 0 8px;font-weight:600}
+label:first-child{margin-top:0}
+input[type=text],input[type=number],input[type=password],textarea,select{width:100%;padding:16px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:18px;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical}
+.btn{width:100%;padding:18px;border-radius:12px;font-size:18px;font-weight:700;background:var(--accent);color:#fff;margin-top:20px;border:none;cursor:pointer;font-family:inherit}
+.btn:disabled{opacity:.35}
+.btn.secondary{background:var(--card2);color:var(--text);border:1px solid var(--line)}
+.btn.small{padding:10px 14px;font-size:14px;margin-top:8px}
+.toggle2{display:flex;gap:10px;margin-top:6px}
+.toggle2 button{flex:1;padding:16px;border-radius:12px;background:var(--card2);color:var(--text);border:1px solid var(--line);font-size:16px;font-weight:600;cursor:pointer;font-family:inherit}
+.toggle2 button.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{padding:10px 14px;border-radius:20px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.section-label{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);margin:20px 0 10px;border-left:3px solid var(--line);padding-left:8px}
+.grid-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.top-icons{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.icon-btn{background:none;border:none;font-size:24px;cursor:pointer;padding:4px;opacity:.7}
+.info-discreta{text-align:right;font-size:12px;color:var(--sub)}
+.action-btn{padding:16px 10px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:14px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;min-height:70px;font-family:inherit}
+.action-btn .ic{font-size:24px}
+.action-btn:disabled{opacity:.3}
+.tramo-open{background:var(--card2);border:1px solid var(--accent);border-radius:12px;padding:14px;margin-bottom:10px}
+.close-tramo-btn{margin-top:12px;background:var(--good);color:#fff;padding:12px;border-radius:10px;width:100%;font-weight:600;border:none;font-size:15px;font-family:inherit}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:50;align-items:flex-end}
+.overlay.active{display:flex}
+.modal{background:var(--card);width:100%;max-width:480px;margin:0 auto;border-radius:18px 18px 0 0;padding:22px 18px 30px;max-height:90vh;overflow-y:auto}
+.modal-close{float:right;background:none;color:var(--sub);font-size:24px;padding:0 4px;cursor:pointer;border:none;line-height:1}
+.summary-line{display:flex;justify-content:space-between;font-size:15px;padding:8px 0;border-bottom:1px solid var(--line)}
+.sync-status{text-align:center;font-size:12px;margin-bottom:10px;color:var(--good)}
+.tramo-sin-cerrar{color:var(--bad);font-weight:700}
+.offline-indicator{display:none;background:var(--bad);color:#fff;text-align:center;font-size:12px;padding:4px;border-radius:6px;margin-bottom:10px}
+.error-msg{color:var(--bad);font-size:12px;margin-top:4px;display:none}
+.error-msg.show{display:block}
+.toast{position:fixed;bottom:16px;left:16px;right:16px;max-width:448px;margin:0 auto;background:var(--card2);border:1px solid var(--accent);padding:12px 14px;border-radius:10px;font-size:13px;display:none;z-index:60;text-align:center}
+.toast.show{display:block}
+.btn-si-apto{position:relative;overflow:hidden;padding:16px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:16px;font-weight:600;cursor:pointer;text-align:left;width:100%;font-family:inherit}
+.btn-si-apto.activo{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-si-apto input{display:none;width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #fff;background:rgba(255,255,255,.9);color:#000;font-size:16px}
+.btn-si-apto.activo input{display:block}
+.btn-no-apto{position:relative;overflow:hidden;padding:16px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--text);font-size:16px;font-weight:600;cursor:pointer;text-align:left;width:100%;font-family:inherit}
+.btn-no-apto.activo{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn-no-apto input{display:none;width:100%;margin-top:8px;padding:10px;border-radius:8px;border:1px solid #fff;background:rgba(255,255,255,.9);color:#000;font-size:16px}
+.btn-no-apto.activo input{display:block}
+.advertencia{background:var(--bad);color:#fff;padding:12px;border-radius:8px;font-weight:700;text-align:center;margin-top:8px;display:none}
+.advertencia.show{display:block}
+
+/* ===== Llave de acceso ===== */
+.llave-input{
+  width:100%;padding:16px;border-radius:12px;border:1px solid var(--line);
+  background:var(--card2);color:var(--text);font-size:18px;font-family:inherit;
+  letter-spacing:.18em;text-align:center;
+}
+.llave-input:focus{outline:none;border-color:var(--accent)}
+.llave-rol{
+  text-align:center;color:var(--accent2);font-size:14px;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:14px;
+}
+.llave-error{
+  color:var(--bad);font-size:13px;text-align:center;margin-top:10px;
+  display:none;
+}
+.llave-error.show{display:block}
+.llave-intentos{
+  color:var(--warn);font-size:12px;text-align:center;margin-top:8px;
+  display:none;
+}
+.llave-intentos.show{display:block}
+.llave-bloqueo{
+  background:#3d1e25;border:1px solid var(--bad);border-radius:10px;
+  padding:14px;margin-top:14px;text-align:center;display:none;
+}
+.llave-bloqueo.show{display:block}
+.llave-bloqueo .lb-titulo{
+  color:var(--bad);font-weight:800;font-size:14px;letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.llave-bloqueo .lb-tiempo{
+  color:var(--text);font-size:28px;font-weight:850;letter-spacing:.05em;
+  margin:6px 0;
+}
+.llave-bloqueo .lb-sub{
+  color:var(--sub);font-size:12px;line-height:1.4;margin-top:8px;
+}
+.llave-bloqueo .lb-bar{
+  height:6px;background:#1e1014;border-radius:4px;overflow:hidden;margin-top:12px;
+}
+.llave-bloqueo .lb-bar-fill{
+  height:100%;background:var(--bad);transition:width 1s linear;
+}
+
+.hint{font-size:12px;color:var(--sub);margin-top:4px;line-height:1.4}
+
+@media(max-width:360px){
+  .role-grid-v8{grid-template-columns:1fr}
+  .role-card-v8.primary{grid-column:1}
+}
+</style>
+<style>
+.falc-alerta-duplicado-v11{background:#fee2e2!important;color:#7f1d1d!important;border:3px solid #dc2626!important;border-left:9px solid #b91c1c!important;border-radius:10px!important;padding:16px!important;font-weight:800!important;font-size:15px!important;line-height:1.5!important;box-shadow:0 0 0 3px rgba(220,38,38,.12)!important}
+.falc-alerta-duplicado-v11::before{content:"⛔ REGISTRO BLOQUEADO";display:block;font-size:14px;letter-spacing:.03em;margin-bottom:6px}
+.falc-alerta-error-v11{background:#fff7ed!important;color:#9a3412!important;border:2px solid #ea580c!important;border-radius:8px!important;padding:12px!important;font-weight:700!important}
+.falc-alerta-ok-v11{color:#166534!important;font-weight:700!important}
+.falc-codigo-conflicto-v11{border:3px solid #dc2626!important;background:#fff1f2!important;box-shadow:0 0 0 2px rgba(220,38,38,.18)!important}
+</style>
+</head>
+<body>
+
+<!-- ==================== ACCESO ÚNICO ==================== -->
+<div class="screen active" id="screen-acceso-v8">
+  <div class="card access-hero">
+    <div class="brand-kicker">Mtto Preventivo 2026</div>
+    <div class="brand-title">Gestión operativa</div>
+    <div class="brand-sub">Ingresa con tus credenciales. El sistema abrirá tu espacio de trabajo.</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <label>Usuario / identificación</label>
+    <input id="v8-identidad" type="text" placeholder="Ej. SUP-001 o nombre" autocomplete="username">
+    <label style="margin-top:12px">Token</label>
+    <input id="v10-token" type="password" placeholder="Token de acceso" autocomplete="current-password">
+    <div id="v10-login-error" class="llave-error"></div>
+    <button class="btn" id="v10-login-btn" onclick="v10Ingresar()" style="margin-top:14px">Ingresar</button>
+  </div>
+  <div class="hint" style="text-align:center;margin-top:14px">Supervisor · Inspector · Contratista<br>Operador y CCTV utilizan sus aplicaciones independientes.</div>
+</div>
+
+<!-- ==================== GESTOR MULTIRROL ==================== -->
+<div class="screen" id="screen-rol-v8">
+  <div class="v8-topbar">
+    <div>
+      <div class="brand-kicker">Mtto Preventivo</div>
+      <div class="v8-user"><strong id="v8-user-name">—</strong> · <span id="v8-role-name">—</span></div>
+    </div>
+    <button class="btn secondary small" style="width:auto;margin:0" onclick="v8CambiarRol()">Cerrar sesión</button>
+  </div>
+  <div id="v8-role-header"></div>
+  <div class="v8-tabs" id="v8-tabs" hidden></div>
+  <div id="v8-role-body"></div>
+</div>
+
+<!-- ==================== APERTURA (operador) ==================== -->
+<div class="screen" id="screen-apertura">
+  <h1>#_Mtto_Preventivo</h1>
+  <div class="card">
+    <label>Placa</label>
+    <select id="ap-placa"><option value="">Cargando placas...</option></select>
+    <label>Barrio</label>
+    <input type="text" id="ap-barrio" placeholder="Se autocompleta por GPS">
+    <div class="advertencia" id="advertencia-inspector"></div>
+    <button class="btn" id="btn-abrir-jornada" disabled>Iniciar jornada</button>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD OPERADOR ==================== -->
+<div class="screen" id="screen-dashboard">
+  <div class="top-icons">
+    <button class="icon-btn" onclick="verBitacoraCompleta()">📋</button>
+    <div class="info-discreta" id="info-tramos-ml">0 tramos · 0 ML</div>
+  </div>
+  <div class="sync-status" id="sync-status">● Listo</div>
+  <div class="offline-indicator" id="offline-indicator">📡 Sin conexión</div>
+  <div id="tramo-abierto-box"></div>
+  <div class="section-label">Tramo</div>
+  <div class="grid-actions" id="box-sin-tramo">
+    <input type="text" id="nuevo-tramo-nombre" placeholder="Máx 6 números" maxlength="6" inputmode="numeric" style="grid-column:1/3;">
+    <button class="btn" id="btn-abrir-tramo" style="grid-column:1/3;" disabled onclick="abrirTramo()">Abrir tramo</button>
+  </div>
+  <div class="section-label">Otras actividades</div>
+  <div class="grid-actions">
+    <button class="action-btn" onclick="abrirModal('ov-desob')" id="act-desob" disabled><span class="ic">❗</span>Desobstrucción</button>
+    <button class="action-btn" onclick="abrirModal('ov-m3')"><span class="ic">💧</span>Carga de agua</button>
+  </div>
+  <div class="section-label">Novedad</div>
+  <div class="grid-actions">
+    <button class="action-btn" onclick="abrirModal('ov-novedad')" style="grid-column:1/3;"><span class="ic">⚠️</span>Novedad</button>
+  </div>
+  <button class="btn secondary" style="margin-top:24px;border:1px solid var(--good);color:var(--good)" onclick="irACierreJornada()">Cerrar jornada</button>
+</div>
+
+<!-- ==================== CCTV ==================== -->
+<div class="screen" id="screen-cctv">
+  <h1>CCTV — Verificación</h1>
+  <div id="cctv-lista"><div class="v8-empty">Conectando al gestor...</div></div>
+  <button class="btn secondary" style="margin-top:20px;" onclick="cerrarJornadaCCTV()">Salir de CCTV</button>
+</div>
+
+<!-- ==================== CIERRE OPERADOR ==================== -->
+<div class="screen" id="screen-cierre">
+  <h1>Cierre de jornada</h1>
+  <h2>Resumen final</h2>
+  <div class="card">
+    <div class="summary-line"><span>Placa</span><strong id="rs-placa"></strong></div>
+    <div class="summary-line"><span>Contratista</span><strong id="rs-contratista"></strong></div>
+    <div class="summary-line"><span>Barrio</span><strong id="rs-barrio"></strong></div>
+    <label>Inspector</label>
+    <select id="rs-inspector-select">
+      <option value="">Selecciona...</option>
+      <option>Marlon Ledezma</option>
+      <option>Luis Díaz</option>
+      <option>Luis Vergara</option>
+      <option>Armando Pájaro</option>
+      <option>Eider Mina</option>
+    </select>
+    <div class="error-msg" id="rs-inspector-error">⚠️ Selecciona un inspector</div>
+  </div>
+  <div class="card" id="rs-tramos"></div>
+  <div class="card">
+    <div class="summary-line"><span>ML total</span><strong id="rs-ml"></strong></div>
+    <div class="summary-line"><span>Desobstrucción</span><strong id="rs-desob"></strong></div>
+    <div class="summary-line"><span>Carga de agua</span><strong id="rs-m3"></strong></div>
+  </div>
+  <div class="card">
+    <label>Actividad complementaria para próxima jornada</label>
+    <textarea id="cierre-solicitud-actividad" rows="3" placeholder="Opcional"></textarea>
+  </div>
+  <div class="card">
+    <label>Observaciones</label>
+    <textarea id="cierre-obs" rows="4" placeholder="Justificación"></textarea>
+  </div>
+  <button class="btn secondary" onclick="volverDashboard()">Volver</button>
+  <button class="btn" id="btn-confirmar-cierre" onclick="confirmarYExportar()">Cerrar jornada</button>
+</div>
+
+<!-- ==================== MODALES ==================== -->
+<div class="overlay" id="ov-bitacora">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal('ov-bitacora')">✕</button>
+    <h3>📋 Bitácora</h3>
+    <div id="bitacora-completa-text" style="background:var(--card2);padding:12px;border-radius:8px;white-space:pre-wrap;font-family:monospace;font-size:13px;max-height:300px;overflow-y:auto"></div>
+    <button class="btn" onclick="copiarBitacoraCompleta()">📋 Copiar</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-desob">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal('ov-desob')">✕</button>
+    <h3>Desobstrucción</h3>
+    <label>Tramo</label>
+    <input type="text" id="desob-tramo" maxlength="6" inputmode="numeric">
+    <button class="btn" onclick="registrarDesobstruccion()">Registrar</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-m3">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal('ov-m3')">✕</button>
+    <h3>Carga de agua</h3>
+    <label>M3</label>
+    <input type="number" id="m3-valor" min="0" step="0.1">
+    <label>Barrio</label>
+    <input type="text" id="m3-barrio">
+    <button class="btn" onclick="registrarM3()">Registrar</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-novedad">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal('ov-novedad')">✕</button>
+    <h3>Novedad</h3>
+    <label>Tipo</label>
+    <div class="chips" id="nov-chips">
+      <button class="chip" onclick="seleccionarTipoNovedad(this,'Avería')">🔧 Avería</button>
+      <button class="chip" onclick="seleccionarTipoNovedad(this,'Lodos')">🗑️ Lodos</button>
+      <button class="chip" onclick="seleccionarTipoNovedad(this,'Fuerza mayor')">🌧️ F. mayor</button>
+      <button class="chip" onclick="seleccionarTipoNovedad(this,'Factor humano')">👤 F. humano</button>
+    </div>
+    <div id="novedad-regresa-box" style="display:none">
+      <label>¿Regresa?</label>
+      <div class="toggle2">
+        <button id="nov-si" onclick="seleccionarRegresa('SI')">Sí</button>
+        <button id="nov-no" onclick="seleccionarRegresa('NO')">No</button>
+      </div>
+    </div>
+    <button class="btn" id="btn-registrar-novedad" disabled onclick="registrarNovedad()">Registrar</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-cierre-tramo">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal('ov-cierre-tramo')">✕</button>
+    <h3>Cerrar tramo</h3>
+    <label>¿Apto CCTV?</label>
+    <button class="btn-si-apto" id="btn-si-apto" onclick="activarBotonSI()">✅ SÍ<input type="number" id="ct-ml" min="0" max="130" placeholder="ML (máx 130)"></button>
+    <div class="error-msg" id="ct-ml-error">⚠️ ML entre 1 y 130</div>
+    <button class="btn-no-apto" id="btn-no-apto" onclick="activarBotonNO()" style="margin-top:10px">❌ NO<input type="text" id="ct-obs" placeholder="Observación"></button>
+    <button class="btn" id="btn-confirmar-cierre-tramo" disabled onclick="confirmarCierreTramo()">Confirmar</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-llave">
+  <div class="modal">
+    <button class="modal-close" onclick="v8CerrarModalLlave()">✕</button>
+    <h3>Acceso restringido</h3>
+    <div class="llave-rol" id="llave-rol-nombre">—</div>
+
+    <label>Llave de acceso</label>
+    <input type="password" id="llave-input" class="llave-input"
+           placeholder="· · · · · ·" autocomplete="off" autocapitalize="off">
+
+    <div class="llave-error" id="llave-error">Llave incorrecta</div>
+    <div class="llave-intentos" id="llave-intentos"></div>
+
+    <button class="btn" id="llave-btn" onclick="v8ValidarLlave()" disabled>Entrar</button>
+
+    <div class="llave-bloqueo" id="llave-bloqueo">
+      <div class="lb-titulo">🔒 Acceso bloqueado</div>
+      <div class="lb-tiempo" id="llave-bloqueo-tiempo">10:00</div>
+      <div class="lb-sub">Demasiados intentos fallidos. Espera a que se libere o cambia de rol.</div>
+      <div class="lb-bar"><div class="lb-bar-fill" id="llave-bloqueo-bar" style="width:100%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==================== CONFIG ==================== */
+/* ==================== CONFIG ==================== */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfERpt4S-r5oDgoAsGMDFYq-RdhOiFsszFjjPTnA_Utm3ZSVQ/formResponse";
+const API_URL = "https://script.google.com/macros/s/AKfycbwDy1V9_-gn0p4fNwVFnQJKJgYewW5ZfjmkRJpV8ckUwXzXWExAIgbuw0x-dUXORV4T/exec";
+const PLACAS_CSV_URL = "";
+const SYNC_QUEUE_KEY = "mtto_prev_sync_v3";
+const STATE_KEY = "mtto_prev_state_v3";
+const PLACAS_CACHE_KEY = "mtto_prev_placas_cache_v3";
+
+/* ==================== LLAVES DE ACCESO POR ROL ==================== */
+const LLAVES_ROL = {
+  inspector:  'insp-2026-mtto',
+  supervisor: 'sup-2026-mtto',
+  cliente:    'cli-2026-mtto',
+  cctv:       'cctv-2026-mtto'
+};
+
+const LLAVE_RECORDAR_DIAS = 30;
+const LLAVE_INTENTOS_MAX  = 5;
+const LLAVE_BLOQUEO_MIN   = 10;
+const LLAVE_STORAGE_KEY   = 'mtto_v81_llaves';
+const LLAVE_BLOQUEO_KEY   = 'mtto_v81_bloqueos';
+
+/* ==================== CATÁLOGOS ==================== */
+const PLACAS_FALLBACK = [
+  {placa:"KPN 603",contratista:"Vactor"},{placa:"LPK 666",contratista:"Vactor"},
+  {placa:"WOW 047",contratista:"Vactor"},{placa:"GFP 750",contratista:"Vactor"},
+  {placa:"GKV 830",contratista:"Succión"},{placa:"JLO 019",contratista:"Succión"},
+  {placa:"LPL301",contratista:"Ingemac"},{placa:"KPN 602",contratista:"Ingemac"},
+  {placa:"THQ 592",contratista:"Ingemac"},{placa:"Otras",contratista:"Otras"}
+];
+let PLACAS = [...PLACAS_FALLBACK];
+
+const CONTRATISTAS_CONOCIDOS = ['vactor','ingemac','succion','succión','demequipos','zygj'];
+
+/* ==================== ESTADO ==================== */
+let STATE = {
+  placa:null,contratista:null,barrio:null,modo:null,gps:null,
+  horaInicio:null,horaFin:null,inspector:null,
+  tramos:[],novedades:[],cerrada:false,
+  actividadCount:0,bitacoraInterna:"",m3Total:0,
+  desobCount:{},avisosRepeticion:[],tramoCount:{},forzadoCierre:false,
+  fechaReporte:null,jornadaReporte:null,
+  cierre:{desob:'',m3:0,obs:'',tramosManuales:'',mlManual:0}
+};
+
+let tempApto=null,tramoACerrar=null,tempTipoNovedad=null,tempRegresa=null;
+
+/* ==================== UTILIDADES ==================== */
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
+function nowISO(){return new Date().toISOString()}
+function fmtHora(iso){return new Date(iso).toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',hour12:true})}
+function capitalizar(s){if(!s)return s;return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase()}
+function mostrarPantalla(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');window.scrollTo(0,0)}
+function abrirModal(id){document.getElementById(id).classList.add('active')}
+function cerrarModal(id){document.getElementById(id).classList.remove('active')}
+
+/* ==================== PERSISTENCIA ==================== */
+function guardarEstado(){try{localStorage.setItem(STATE_KEY,JSON.stringify(STATE))}catch(e){}}
+function cargarEstado(){try{const d=localStorage.getItem(STATE_KEY);if(d){const s=JSON.parse(d);if(!s.cerrada)STATE=s}}catch(e){}
+  if(!STATE.desobCount)STATE.desobCount={}; if(!STATE.tramoCount)STATE.tramoCount={};
+  if(!STATE.avisosRepeticion)STATE.avisosRepeticion=[];}
+
+/* ==================== COLA OFFLINE ==================== */
+function cargarCola(){try{return JSON.parse(localStorage.getItem(SYNC_QUEUE_KEY)||'[]')}catch(e){return[]}}
+function guardarCola(c){try{localStorage.setItem(SYNC_QUEUE_KEY,JSON.stringify(c))}catch(e){}}
+function encolarPayload(p){const c=cargarCola();c.push(p);guardarCola(c);actualizarEstadoSync()}
+function actualizarEstadoSync(){const el=document.getElementById('sync-status');if(!el)return;const c=cargarCola();el.textContent=c.length===0?'● Listo':`● ${c.length} pendiente(s)`;el.style.color=c.length===0?'var(--good)':'var(--warn)'}
+async function procesarCola(){const c=cargarCola();if(!c.length)return;const rest=[];for(const p of c){try{await enviarPayload(p)}catch(e){rest.push(p)}}guardarCola(rest);actualizarEstadoSync()}
+
+async function enviarPayload(p){
+  if(FORM_URL.includes("PEGA_AQUI")) return {ok:false,offline:true};
+  const fd=new URLSearchParams();
+  fd.append('entry.698566237',p.tipo||'');
+  fd.append('entry.759456156',JSON.stringify(p.datos||{}));
+  fd.append('entry.1958505050',p.placa||'');
+  fd.append('entry.1438075125',p.contratista||'');
+  fd.append('entry.1542290425',p.barrio||'');
+  fd.append('entry.1617359207',p.actor||p.inspector||'');
+  await fetch(FORM_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:fd.toString()});
+  return{ok:true};
+}
+
+async function enviarHitoRemoto(tipo,datos){
+  const payload={tipo,datos,placa:STATE.placa,contratista:STATE.contratista,barrio:STATE.barrio,actor:STATE.inspector||V8.nombre||''};
+  if(!navigator.onLine){encolarPayload(payload);return}
+  try{await enviarPayload(payload);actualizarEstadoSync();procesarCola()}catch(e){encolarPayload(payload)}
+}
+
+async function enviarGestion(tipo,datos){
+  const payload={
+    tipo,
+    datos:Object.assign({actor:V8.nombre||'',nombre:V8.nombre||'',rol:V8.rol||'',fechaCliente:nowISO()},datos||{}),
+    placa:datos&&datos.placa||'',
+    contratista:datos&&datos.contratista||'',
+    barrio:datos&&datos.barrio||'',
+    actor:V8.nombre||''
+  };
+  if(!navigator.onLine){encolarPayload(payload);return {ok:true,offline:true}}
+  try{await enviarPayload(payload);return{ok:true}}catch(e){encolarPayload(payload);return{ok:true,offline:true}}
+}
+
+/* ==================== API JSONP ==================== */
+function v8ApiGet(action,params){
+  if(API_URL.includes('PEGA_AQUI'))return Promise.resolve({ok:false,offline:true});
+  return new Promise((resolve,reject)=>{
+    const cb='v8cb_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    const timeout=setTimeout(()=>{
+      if(window[cb]){delete window[cb];try{document.body.removeChild(s)}catch(e){}reject(new Error('timeout'));}
+    },12000);
+    window[cb]=data=>{
+      clearTimeout(timeout);
+      delete window[cb];
+      try{document.body.removeChild(s)}catch(e){}
+      resolve(data);
+    };
+    const qs=new URLSearchParams(Object.assign({action,callback:cb},params||{})).toString();
+    s.src=API_URL+'?'+qs;
+    s.onerror=()=>{
+      clearTimeout(timeout);
+      delete window[cb];
+      try{document.body.removeChild(s)}catch(e){}
+      reject(new Error('network'));
+    };
+    document.body.appendChild(s);
+  });
+}
+
+/* ==================== PLACAS ==================== */
+async function cargarPlacas(){
+  try{const cache=localStorage.getItem(PLACAS_CACHE_KEY);if(cache){const p=JSON.parse(cache);if(Array.isArray(p)&&p.length>0){PLACAS=p;renderPlacasSelect()}}}catch(e){}
+  if(!navigator.onLine){renderPlacasSelect();return}
+  if(PLACAS_CSV_URL.includes("PEGA_AQUI")){renderPlacasSelect();return}
+  try{
+    const r=await fetch(PLACAS_CSV_URL);const csv=await r.text();const arr=parsearCSV(csv);
+    if(arr.length>0){PLACAS=arr;localStorage.setItem(PLACAS_CACHE_KEY,JSON.stringify(arr));renderPlacasSelect()}
+  }catch(e){renderPlacasSelect()}
+}
+function parsearCSV(csv){const lineas=csv.split('\n').filter(l=>l.trim());const out=[];
+  for(let i=0;i<lineas.length;i++){const c=parsearLinea(lineas[i]);if(i===0&&(c[0]||'').toLowerCase().trim()==='placa')continue;
+    const placa=(c[0]||'').trim();const contratista=(c[1]||'').trim();if(placa&&contratista)out.push({placa,contratista})}
+  return out}
+function parsearLinea(l){const r=[];let a='';let q=false;for(const ch of l){if(ch==='"')q=!q;else if(ch===','&&!q){r.push(a);a=''}else a+=ch}r.push(a);return r}
+function renderPlacasSelect(){const s=document.getElementById('ap-placa');if(!s)return;const v=s.value;s.innerHTML='<option value="">Selecciona placa...</option>'+PLACAS.map(p=>`<option value="${p.placa}|${p.contratista}">${p.placa} — ${p.contratista}</option>`).join('');if(v)s.value=v}
+
+/* ==================== GPS ==================== */
+function getGPS(){return new Promise(r=>{if(!navigator.geolocation){r(null);return}navigator.geolocation.getCurrentPosition(p=>r({lat:p.coords.latitude,lng:p.coords.longitude}),()=>r(null),{timeout:8000})})}
+async function reverseGeocode(gps){if(!gps)return"";try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${gps.lat}&lon=${gps.lng}&format=json`);const d=await r.json();const a=d.address||{};return capitalizar(a.suburb||a.neighbourhood||a.quarter||a.city_district||a.village||"")}catch(e){return""}}
+
+/* ==================== APERTURA ==================== */
+function validarApertura(){const btn=document.getElementById('btn-abrir-jornada');if(!btn)return;btn.disabled=!(document.getElementById('ap-placa').value&&document.getElementById('ap-barrio').value.trim())}
+document.getElementById('ap-placa').addEventListener('change',e=>{const v=e.target.value;if(v){const p=v.split('|');STATE.placa=p[0];STATE.contratista=p[1]}else{STATE.placa=null;STATE.contratista=null}validarApertura()});
+document.getElementById('ap-barrio').addEventListener('input',e=>{STATE.barrio=e.target.value.trim();validarApertura()});
+
+function calcularTurno(horaISO){const h=new Date(horaISO).getHours();return(h>=6&&h<18)?'Diurno':'Nocturno'}
+
+document.getElementById('btn-abrir-jornada').onclick=async function(){
+  const bv=document.getElementById('ap-barrio').value.trim();
+  STATE.modo='operador';STATE.barrio=capitalizar(bv);STATE.horaInicio=nowISO();guardarEstado();
+  mostrarPantalla('screen-dashboard');renderDashboard();
+  const turno=calcularTurno(STATE.horaInicio);const gps=STATE.gps||await getGPS();const dir=await reverseGeocode(gps);
+  enviarHitoRemoto('jornadaInicio',{lat:gps?gps.lat:'',lng:gps?gps.lng:'',direccion:dir,turno});
+  registrarHito(`*Apertura de jornada*\n[Contratista: ${STATE.contratista}]\n[Turno: ${turno}]\n[Hora: ${fmtHora(STATE.horaInicio)}]\n[Actividad del dia #; X]`);
+};
+
+async function initGPSApertura(){const gps=await getGPS();STATE.gps=gps;const barrio=await reverseGeocode(gps);
+  const el=document.getElementById('ap-barrio');if(!el)return;
+  if(barrio&&!el.value.trim()){el.value=barrio;STATE.barrio=barrio}
+  validarApertura()}
+
+/* ==================== DASHBOARD ==================== */
+function renderDashboard(){
+  const act=STATE.tramos.find(t=>t.id===STATE.tramoActivoId&&!t.cierre);
+  const totalML=calcularMLTotal();
+  document.getElementById('info-tramos-ml').textContent=`${STATE.tramos.length} tramos · ${totalML} ML`;
+  const box=document.getElementById('tramo-abierto-box'), sin=document.getElementById('box-sin-tramo');
+  if(act){sin.style.display='none';document.getElementById('act-desob').disabled=false;
+    box.innerHTML=`<div class="tramo-open"><div>${act.tramo}</div><div style="color:var(--sub);font-size:12px">Iniciado ${fmtHora(act.horaInicio)}</div><button class="close-tramo-btn" onclick="abrirModalCierreTramo('${act.id}')">Cerrar tramo</button></div>`}
+  else{box.innerHTML='';sin.style.display='grid';document.getElementById('act-desob').disabled=true}
+}
+function calcularMLTotal(){return STATE.tramos.filter(t=>t.cierre&&t.cierre.apto==='SI').reduce((s,t)=>s+(Number(t.cierre.ml)||0),0)}
+
+/* ==================== BITÁCORA ==================== */
+function fechaReporte(){return STATE.fechaReporte||(STATE.horaInicio?new Date(STATE.horaInicio).toLocaleDateString('es-CO'):'')}
+function generarEncabezado(){const p=STATE.placa?STATE.placa.replace(/\s+/g,''):'';const f=fechaReporte();const b=STATE.barrio?STATE.barrio.toUpperCase():'';return `#_Mtto_Preventivo\n${p}|${f}|${b}`}
+function registrarHito(bloque){STATE.actividadCount++;const enc=generarEncabezado();const cuerpo=bloque.replace('[Actividad del dia #; X]',`[Actividad del dia #; ${STATE.actividadCount}]`);const completo=enc+'\n\n'+cuerpo;
+  if(!STATE.bitacoraInterna)STATE.bitacoraInterna=enc+'\n\n'+cuerpo;else STATE.bitacoraInterna+='\n\n'+cuerpo;
+  guardarEstado();copiarAlPortapapeles(completo)}
+function copiarAlPortapapeles(t){if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>toast("✅ Copiado")).catch(()=>fallbackCopy(t))}else fallbackCopy(t)}
+function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast("✅ Copiado")}catch(e){}document.body.removeChild(ta)}
+
+/* ==================== TRAMO ==================== */
+document.getElementById('nuevo-tramo-nombre').addEventListener('input',e=>{e.target.value=e.target.value.replace(/[^0-9]/g,'').slice(0,6);document.getElementById('btn-abrir-tramo').disabled=!e.target.value.trim()});
+async function abrirTramo(){const nombre=document.getElementById('nuevo-tramo-nombre').value.trim();const gps=await getGPS();const dir=await reverseGeocode(gps);
+  const id='t'+Date.now();STATE.tramos.push({id,tramo:nombre,horaInicio:nowISO(),gps,dir,cierre:null});STATE.tramoActivoId=id;
+  if(!STATE.tramoCount)STATE.tramoCount={};STATE.tramoCount[nombre]=(STATE.tramoCount[nombre]||0)+1;
+  if(STATE.tramoCount[nombre]>1){const aviso=`⚠️ Tramo ${nombre} abierto ${STATE.tramoCount[nombre]} veces`;const idx=STATE.avisosRepeticion.findIndex(a=>a.startsWith(`⚠️ Tramo ${nombre} abierto`));if(idx>=0)STATE.avisosRepeticion[idx]=aviso;else STATE.avisosRepeticion.push(aviso)}
+  guardarEstado();registrarHito(`*Apertura de tramo*\n[Tramo: ${nombre}]\n[Hora: ${fmtHora(nowISO())}]\n[Actividad del dia #; X]`);
+  enviarHitoRemoto('tramoInicio',{tramo:nombre,lat:gps?gps.lat:'',lng:gps?gps.lng:'',direccion:dir});
+  document.getElementById('nuevo-tramo-nombre').value='';document.getElementById('btn-abrir-tramo').disabled=true;renderDashboard()}
+
+/* ==================== CIERRE TRAMO ==================== */
+function abrirModalCierreTramo(id){tramoACerrar=id;tempApto=null;
+  document.getElementById('btn-si-apto').classList.remove('activo');document.getElementById('btn-no-apto').classList.remove('activo');
+  document.getElementById('ct-ml').value='';document.getElementById('ct-obs').value='';document.getElementById('ct-ml-error').classList.remove('show');
+  document.getElementById('btn-confirmar-cierre-tramo').disabled=true;abrirModal('ov-cierre-tramo')}
+function activarBotonSI(){tempApto='SI';document.getElementById('btn-si-apto').classList.add('activo');document.getElementById('btn-no-apto').classList.remove('activo');document.getElementById('ct-obs').value='';document.getElementById('ct-ml').focus();validarCierreTramo()}
+function activarBotonNO(){tempApto='NO';document.getElementById('btn-no-apto').classList.add('activo');document.getElementById('btn-si-apto').classList.remove('activo');document.getElementById('ct-ml').value='';document.getElementById('ct-obs').focus();validarCierreTramo()}
+document.getElementById('ct-ml').addEventListener('input',validarCierreTramo);
+document.getElementById('ct-obs').addEventListener('input',validarCierreTramo);
+function validarCierreTramo(){const b=document.getElementById('btn-confirmar-cierre-tramo'),e=document.getElementById('ct-ml-error');let ok=false;
+  if(tempApto==='SI'){const ml=Number(document.getElementById('ct-ml').value);if(ml<=0||ml>130){e.classList.add('show')}else{e.classList.remove('show');ok=true}}
+  else if(tempApto==='NO'){e.classList.remove('show');ok=document.getElementById('ct-obs').value.trim().length>0}
+  b.disabled=!ok}
+async function confirmarCierreTramo(){const btn=document.getElementById('btn-confirmar-cierre-tramo');if(btn.disabled)return;
+  const tramo=STATE.tramos.find(t=>t.id===tramoACerrar);if(!tramo)return;btn.disabled=true;
+  if(tempApto==='SI'){const ml=Number(document.getElementById('ct-ml').value);tramo.cierre={apto:'SI',ml,obs:''}}
+  else{tramo.cierre={apto:'NO',ml:0,obs:capitalizar(document.getElementById('ct-obs').value.trim())}}
+  tramo.cerrado=true;tramo.horaFin=nowISO();guardarEstado();
+  const gps=await getGPS();const dir=await reverseGeocode(gps);
+  registrarHito(`*Cierre de tramo*\n[Tramo: ${tramo.tramo}]\n[Apto CCTV: ${tramo.cierre.apto}]\n${tramo.cierre.apto==='SI'?`[ML: ${tramo.cierre.ml}]`:`[Observación: ${tramo.cierre.obs}]`}\n[Hora: ${fmtHora(nowISO())}]\n[Actividad del dia #; X]`);
+  enviarHitoRemoto('tramoCierre',{tramo:tramo.tramo,aptoCCTV:tramo.cierre.apto,ml:tramo.cierre.ml,observacion:tramo.cierre.obs,lat:gps?gps.lat:'',lng:gps?gps.lng:'',direccion:dir});
+  cerrarModal('ov-cierre-tramo');tramoACerrar=null;renderDashboard()}
+
+/* ==================== DESOB / M3 ==================== */
+async function registrarDesobstruccion(){const act=STATE.tramos.find(t=>t.id===STATE.tramoActivoId&&!t.cierre);if(!act){toast("No hay tramo activo");return}
+  const t=document.getElementById('desob-tramo').value.trim();if(!t){toast("Ingresa tramo");return}
+  STATE.desobCount[t]=(STATE.desobCount[t]||0)+1;guardarEstado();
+  registrarHito(`*Desobstrucción*\n[Tramo: ${t}]\n[Hora: ${fmtHora(nowISO())}]\n[Actividad del dia #; X]`);
+  enviarHitoRemoto('desob',{tramo:t});document.getElementById('desob-tramo').value='';cerrarModal('ov-desob');renderDashboard()}
+async function registrarM3(){const v=Number(document.getElementById('m3-valor').value)||0;const b=capitalizar(document.getElementById('m3-barrio').value.trim())||STATE.barrio;
+  STATE.m3Total=(STATE.m3Total||0)+v;guardarEstado();
+  registrarHito(`*Carga de agua*\n[M3: ${v}]\n[Barrio: ${b}]\n[Hora: ${fmtHora(nowISO())}]\n[Actividad del dia #; X]`);
+  enviarHitoRemoto('m3',{valor:v,barrioM3:b});document.getElementById('m3-valor').value='';document.getElementById('m3-barrio').value='';cerrarModal('ov-m3')}
+
+/* ==================== NOVEDAD ==================== */
+function seleccionarTipoNovedad(btn,tipo){tempTipoNovedad=tipo;tempRegresa=null;
+  document.querySelectorAll('#nov-chips .chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('novedad-regresa-box').style.display='block';document.getElementById('nov-si').classList.remove('sel');document.getElementById('nov-no').classList.remove('sel');
+  document.getElementById('btn-registrar-novedad').disabled=true}
+function seleccionarRegresa(v){tempRegresa=v;document.getElementById('nov-si').classList.toggle('sel',v==='SI');document.getElementById('nov-no').classList.toggle('sel',v==='NO');document.getElementById('btn-registrar-novedad').disabled=false}
+async function registrarNovedad(){const btn=document.getElementById('btn-registrar-novedad');if(btn.disabled)return;btn.disabled=true;
+  STATE.novedades.push({tipo:tempTipoNovedad,regresa:tempRegresa,hora:nowISO()});guardarEstado();
+  registrarHito(`*Novedad*\n[Tipo: ${tempTipoNovedad}]\n[Regresa: ${tempRegresa}]\n[Hora: ${fmtHora(nowISO())}]\n[Actividad del dia #; X]`);
+  enviarHitoRemoto('novedad',{causa:tempTipoNovedad,regresa:tempRegresa});
+  cerrarModal('ov-novedad');btn.disabled=false;
+  if(tempRegresa==='NO')await cerrarTramoPorNoRegresa(tempTipoNovedad)}
+async function cerrarTramoPorNoRegresa(motivo){const act=STATE.tramos.find(t=>t.id===STATE.tramoActivoId&&!t.cierre);
+  if(act){act.cierre={apto:'NO',ml:0,obs:motivo};act.cerrado=true;act.horaFin=nowISO();guardarEstado();
+    registrarHito(`*Cierre de tramo*\n[Tramo: ${act.tramo}]\n[Apto CCTV: NO]\n[Observación: ${motivo}]\n[Actividad del dia #; X]`);}
+  STATE.forzadoCierre=true;guardarEstado();irACierreJornada()}
+
+/* ==================== CIERRE JORNADA ==================== */
+function irACierreJornada(){STATE.horaFin=nowISO();mostrarPantalla('screen-cierre');document.getElementById('btn-volver-dashboard').style.display=STATE.forzadoCierre?'none':'block';renderResumen()}
+function renderResumen(){
+  document.getElementById('rs-placa').textContent=STATE.placa;
+  document.getElementById('rs-contratista').textContent=STATE.contratista;
+  document.getElementById('rs-barrio').textContent=STATE.barrio;
+  const mlS=calcularMLTotal();const mlT=mlS+STATE.cierre.mlManual;
+  document.getElementById('rs-ml').textContent=mlT+' ML';
+  document.getElementById('rs-desob').textContent=STATE.cierre.desob||'—';
+  document.getElementById('rs-m3').textContent=(STATE.m3Total||0)+STATE.cierre.m3+' m³';
+  const tb=document.getElementById('rs-tramos');tb.innerHTML='<div class="section-label">Tramos</div>';
+  STATE.tramos.forEach(t=>{const d=document.createElement('div');d.className='summary-line';
+    if(t.cierre&&t.cierre.apto==='SI')d.innerHTML=`<span>✅ ${t.tramo}</span><strong>${t.cierre.ml} ML</strong>`;
+    else if(t.cierre&&t.cierre.apto==='NO')d.innerHTML=`<span>❌ ${t.tramo}</span><strong>${t.cierre.obs}</strong>`;
+    else d.innerHTML=`<span class="tramo-sin-cerrar">⚠️ ${t.tramo} — SIN CERRAR</span>`;
+    tb.appendChild(d)})
+}
+function volverDashboard(){mostrarPantalla('screen-dashboard');renderDashboard()}
+async function confirmarYExportar(){
+  const sel=document.getElementById('rs-inspector-select');
+  if(!sel.value){document.getElementById('rs-inspector-error').classList.add('show');sel.focus();return}
+  document.getElementById('rs-inspector-error').classList.remove('show');
+  STATE.inspector=sel.value;STATE.cierre.obs=document.getElementById('cierre-obs').value.trim();
+  const sol=document.getElementById('cierre-solicitud-actividad').value.trim();
+  guardarEstado();
+  const mlT=calcularMLTotal()+STATE.cierre.mlManual;
+  enviarHitoRemoto('jornadaCierre',{mlTotal:mlT,observaciones:STATE.cierre.obs});
+  if(sol){await enviarGestion('solicitudOperador',{texto:sol,placa:STATE.placa,contratista:STATE.contratista,barrio:STATE.barrio})}
+  toast('✅ Jornada cerrada');STATE.cerrada=true;guardarEstado();setTimeout(reiniciarApp,1500)
+}
+
+/* ==================== BITÁCORA MODAL ==================== */
+function verBitacoraCompleta(){document.getElementById('bitacora-completa-text').textContent=STATE.bitacoraInterna||"Sin registros";abrirModal('ov-bitacora')}
+function copiarBitacoraCompleta(){copiarAlPortapapeles(STATE.bitacoraInterna||"Sin registros")}
+
+/* ==================== REINICIAR ==================== */
+function reiniciarApp(){
+  STATE={placa:null,contratista:null,barrio:null,modo:null,gps:null,horaInicio:null,horaFin:null,inspector:null,tramos:[],novedades:[],cerrada:false,actividadCount:0,bitacoraInterna:"",m3Total:0,desobCount:{},avisosRepeticion:[],tramoCount:{},forzadoCierre:false,fechaReporte:null,jornadaReporte:null,cierre:{desob:'',m3:0,obs:'',tramosManuales:'',mlManual:0}};
+  mostrarPantalla('screen-acceso-v8');
+  document.getElementById('ap-placa').value='';document.getElementById('ap-barrio').value='';
+  document.getElementById('btn-abrir-jornada').disabled=true;
+  v8Init();
+}
+
+/* ==================== CONEXIÓN ==================== */
+function verificarConexion(){const el=document.getElementById('offline-indicator');if(el)el.style.display=navigator.onLine?'none':'block'}
+window.addEventListener('online',()=>{verificarConexion();procesarCola();cargarPlacas()});
+window.addEventListener('offline',verificarConexion);
+
+/* ==================== V8 RUNTIME ==================== */
+const V8={ rol:null, nombre:'', tab:'inicio' };
+const V8_ROLE_NAMES={inspector:'Inspector',supervisor:'Supervisor',
+  cliente:'Contratista',oficina:'Oficina',cctv:'CCTV'};
+
+let V8_rol_pendiente=null;
+let V8_bloqueoTimer=null;
+
+function v8Init(){
+  const inp=document.getElementById('v8-identidad');
+  if(inp){
+    const ultimoNombre=localStorage.getItem('mtto_v8_nombre')||'';
+    if(ultimoNombre && !/^[A-Z]{3}\s?\d{3}$/i.test(ultimoNombre)) inp.value=ultimoNombre;
+  }
+  mostrarPantalla('screen-acceso-v8');
+}
+
+/* ==================== OTROS ROLES: piden llave ==================== */
+function v8Entrar(rol){
+  const bloqueo=v8BloqueoActivo(rol);
+  if(bloqueo){
+    v8AbrirModalLlave(rol);
+    v8MostrarBloqueo(bloqueo);
+    return;
+  }
+
+  if(v8LlaveRecordadaValida(rol)){
+    v8AplicarRol(rol);
+    return;
+  }
+
+  v8AbrirModalLlave(rol);
+}
+
+function v8AbrirModalLlave(rol){
+  V8_rol_pendiente=rol;
+  document.getElementById('llave-rol-nombre').textContent=V8_ROLE_NAMES[rol]||rol;
+  document.getElementById('llave-input').value='';
+  document.getElementById('llave-error').classList.remove('show');
+  document.getElementById('llave-bloqueo').classList.remove('show');
+  document.getElementById('llave-input').disabled=false;
+
+  const info=v8InfoIntentos(rol);
+  const restantes=Math.max(0, LLAVE_INTENTOS_MAX - info.fallos);
+  const elIntentos=document.getElementById('llave-intentos');
+  if(info.fallos>0 && !v8BloqueoActivo(rol)){
+    elIntentos.textContent = 'Intentos restantes: ' + restantes;
+    elIntentos.classList.add('show');
+  } else {
+    elIntentos.classList.remove('show');
+  }
+
+  const btn=document.getElementById('llave-btn');
+  btn.disabled=true;
+  const inp=document.getElementById('llave-input');
+  inp.oninput=e=>{ btn.disabled = e.target.value.length < 4; };
+  inp.onkeydown=e=>{ if(e.key==='Enter' && e.target.value.length>=4) v8ValidarLlave(); };
+
+  abrirModal('ov-llave');
+  setTimeout(()=>inp.focus(),150);
+}
+
+function v8CerrarModalLlave(){
+  V8_rol_pendiente=null;
+  if(V8_bloqueoTimer){ clearInterval(V8_bloqueoTimer); V8_bloqueoTimer=null; }
+  cerrarModal('ov-llave');
+}
+
+function v8ValidarLlave(){
+  if(!V8_rol_pendiente) return;
+
+  const bloqueo=v8BloqueoActivo(V8_rol_pendiente);
+  if(bloqueo){ v8MostrarBloqueo(bloqueo); return; }
+
+  const valor=(document.getElementById('llave-input').value||'').trim();
+  if(!valor) return;
+
+  const esperada=LLAVES_ROL[V8_rol_pendiente]||'';
+  if(valor===esperada){
+    v8RecordarLlave(V8_rol_pendiente);
+    v8ResetIntentos(V8_rol_pendiente);
+    const rol=V8_rol_pendiente;
+    V8_rol_pendiente=null;
+    cerrarModal('ov-llave');
+    v8AplicarRol(rol);
+    return;
+  }
+
+  const info=v8RegistrarFallo(V8_rol_pendiente);
+  document.getElementById('llave-error').classList.add('show');
+  document.getElementById('llave-input').value='';
+  document.getElementById('llave-btn').disabled=true;
+
+  if(info.fallos>=LLAVE_INTENTOS_MAX){
+    v8AplicarBloqueo(V8_rol_pendiente);
+    const b=v8BloqueoActivo(V8_rol_pendiente);
+    v8MostrarBloqueo(b);
+  } else {
+    const restantes=LLAVE_INTENTOS_MAX - info.fallos;
+    const el=document.getElementById('llave-intentos');
+    el.textContent = 'Intentos restantes: ' + restantes;
+    el.classList.add('show');
+    document.getElementById('llave-input').focus();
+  }
+}
+
+function v8AplicarRol(rol){
+  const inp=document.getElementById('v8-identidad');
+  const nombre=(inp && inp.value.trim()) || '';
+  V8.rol=rol;
+  V8.nombre = nombre || V8_ROLE_NAMES[rol];
+  localStorage.setItem('mtto_v8_nombre',V8.nombre);
+  localStorage.setItem('mtto_v8_rol',rol);
+
+  if(rol==='cctv'){
+    mostrarPantalla('screen-cctv');
+    cargarListaCCTV();
+    return;
+  }
+  v8RenderRol();
+}
+
+/* ==================== LLAVES: RECORDAR ==================== */
+function v8LlaveRecordadaValida(rol){
+  if(LLAVE_RECORDAR_DIAS===0) return false;
+  try{
+    const bolsa=JSON.parse(localStorage.getItem(LLAVE_STORAGE_KEY)||'{}');
+    const e=bolsa[rol];
+    if(!e) return false;
+    if(Date.now() - e.ts > LLAVE_RECORDAR_DIAS*86400000) return false;
+    return e.llave === LLAVES_ROL[rol];
+  }catch(err){ return false; }
+}
+function v8RecordarLlave(rol){
+  try{
+    const bolsa=JSON.parse(localStorage.getItem(LLAVE_STORAGE_KEY)||'{}');
+    bolsa[rol]={llave:LLAVES_ROL[rol], ts:Date.now()};
+    localStorage.setItem(LLAVE_STORAGE_KEY,JSON.stringify(bolsa));
+  }catch(e){}
+}
+function v8OlvidarLlaves(){
+  localStorage.removeItem(LLAVE_STORAGE_KEY);
+  localStorage.removeItem(LLAVE_BLOQUEO_KEY);
+}
+
+/* ==================== LLAVES: BLOQUEO POR INTENTOS ==================== */
+function v8InfoIntentos(rol){
+  try{
+    const bolsa=JSON.parse(localStorage.getItem(LLAVE_BLOQUEO_KEY)||'{}');
+    return bolsa[rol]||{fallos:0, bloqueadoHasta:0};
+  }catch(e){ return {fallos:0, bloqueadoHasta:0}; }
+}
+function v8GuardarIntentos(rol,info){
+  try{
+    const bolsa=JSON.parse(localStorage.getItem(LLAVE_BLOQUEO_KEY)||'{}');
+    bolsa[rol]=info;
+    localStorage.setItem(LLAVE_BLOQUEO_KEY,JSON.stringify(bolsa));
+  }catch(e){}
+}
+function v8RegistrarFallo(rol){
+  const info=v8InfoIntentos(rol);
+  info.fallos=(info.fallos||0)+1;
+  v8GuardarIntentos(rol,info);
+  return info;
+}
+function v8ResetIntentos(rol){
+  const info=v8InfoIntentos(rol);
+  info.fallos=0;
+  info.bloqueadoHasta=0;
+  v8GuardarIntentos(rol,info);
+}
+function v8AplicarBloqueo(rol){
+  const info=v8InfoIntentos(rol);
+  info.bloqueadoHasta=Date.now() + LLAVE_BLOQUEO_MIN*60000;
+  info.fallos=LLAVE_INTENTOS_MAX;
+  v8GuardarIntentos(rol,info);
+}
+function v8BloqueoActivo(rol){
+  const info=v8InfoIntentos(rol);
+  if(!info.bloqueadoHasta) return null;
+  const restante=info.bloqueadoHasta - Date.now();
+  if(restante<=0){
+    info.bloqueadoHasta=0;
+    info.fallos=0;
+    v8GuardarIntentos(rol,info);
+    return null;
+  }
+  return {restante, hasta:info.bloqueadoHasta};
+}
+
+function v8MostrarBloqueo(b){
+  if(!b) return;
+  const total=LLAVE_BLOQUEO_MIN*60000;
+  const elTiempo=document.getElementById('llave-bloqueo-tiempo');
+  const elBar=document.getElementById('llave-bloqueo-bar');
+  document.getElementById('llave-bloqueo').classList.add('show');
+  document.getElementById('llave-error').classList.remove('show');
+  document.getElementById('llave-intentos').classList.remove('show');
+  document.getElementById('llave-btn').disabled=true;
+  document.getElementById('llave-input').disabled=true;
+
+  const pintar=()=>{
+    const restante=v8BloqueoActivo(V8_rol_pendiente);
+    if(!restante){
+      document.getElementById('llave-bloqueo').classList.remove('show');
+      document.getElementById('llave-input').disabled=false;
+      document.getElementById('llave-input').value='';
+      document.getElementById('llave-intentos').classList.remove('show');
+      document.getElementById('llave-btn').disabled=true;
+      document.getElementById('llave-input').focus();
+      if(V8_bloqueoTimer){ clearInterval(V8_bloqueoTimer); V8_bloqueoTimer=null; }
+      return;
+    }
+    const seg=Math.ceil(restante.restante/1000);
+    const mm=String(Math.floor(seg/60)).padStart(2,'0');
+    const ss=String(seg%60).padStart(2,'0');
+    elTiempo.textContent=`${mm}:${ss}`;
+    elBar.style.width=Math.max(0, (restante.restante/total*100))+'%';
+  };
+  pintar();
+  if(V8_bloqueoTimer) clearInterval(V8_bloqueoTimer);
+  V8_bloqueoTimer=setInterval(pintar,1000);
+}
+
+/* ==================== CAMBIAR DE ROL ==================== */
+function v8CambiarRol(){
+  V8.rol=null;
+  mostrarPantalla('screen-acceso-v8');
+  const inp=document.getElementById('v8-identidad');
+  if(inp) inp.value=localStorage.getItem('mtto_v8_nombre')||'';
+}
+
+/* ==================== VISTAS POR ROL ==================== */
+function v8RenderRol(){
+  mostrarPantalla('screen-rol-v8');
+  document.getElementById('v8-user-name').textContent=V8.nombre;
+  document.getElementById('v8-role-name').textContent=V8_ROLE_NAMES[V8.rol]||V8.rol;
+  const defs={
+    supervisor:{title:'Control por excepción',sub:'¿Qué necesita una decisión mía?',tabs:['inicio','cortes']},
+    inspector:{title:'Sensor de campo',sub:'¿Qué tengo que verificar?',tabs:['observar']},
+    cliente:{title:'Contratista',sub:'Asigna placas y gestiona sus obligaciones.',tabs:['pendientes']},
+    oficina:{title:'Programación y consolidado',sub:'Programa tareas; las placas las asigna el contratista.',tabs:['tareas','agua']}
+  };
+  const d=defs[V8.rol]||defs.supervisor;
+  document.getElementById('v8-role-header').innerHTML=`<div class="card access-hero"><div class="brand-title" style="font-size:21px">${d.title}</div><div class="brand-sub">${d.sub}</div></div>`;
+  if(!d.tabs.includes(V8.tab))V8.tab=d.tabs[0];
+  document.getElementById('v8-tabs').innerHTML='';
+  v8CargarVista();
+}
+function v8LabelTab(t){return ({inicio:'Decisiones',testigos:'Testigos',tareas:'Tareas',cortes:'Corte semanal',observar:'Misiones',pendientes:'Tareas y gestión',agua:'Agua m³'})[t]||t}
+function v8Tab(t){V8.tab=t;v8RenderRol()}
+function v8Esc(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function v8DetectarContratista(){
+  const n=(V8.nombre||'').toLowerCase();
+  const c=CONTRATISTAS_CONOCIDOS.find(x=>n.includes(x));
+  return c==='succión'?'Succión':(c?capitalizar(c):'');
+}
+
+async function v8CargarVista(){
+  const b=document.getElementById('v8-role-body');if(!b)return;
+  if(API_URL.includes('PEGA_AQUI')){b.innerHTML=v8VistaLocal();return}
+  b.innerHTML='<div class="v8-empty">Cargando…</div>';
+  try{
+    if(V8.rol==='supervisor'){
+      const [ex,tar]=await Promise.all([v8ApiGet('excepciones',{}),v8ApiGet('tareas',{})]);
+      b.innerHTML=v8SupervisorVista(ex,tar);
+    }else if(V8.rol==='cliente'){
+      const contratista=v8DetectarContratista();
+      const tar=await v8ApiGet('tareas',contratista?{contratista}:{});
+      b.innerHTML=v8ClienteVista(tar);
+    }else if(V8.rol==='oficina'){
+      const tar=await v8ApiGet('tareas',{});
+      b.innerHTML=v8OficinaVista(tar);
+    }else if(V8.rol==='inspector'){
+      b.innerHTML=v8InspectorVista();
+    }
+  }catch(e){b.innerHTML=v8VistaLocal()+`<div class="hint">Sin conexión al gestor. La bitácora operador no se afecta.</div>`}
+}
+function v8VistaLocal(){
+  if(V8.rol==='inspector')return v8InspectorVista();
+  return `<div class="card"><div class="v8-empty">Esperando conexión con el gestor.<br><small>Verifica que API_URL esté configurada y que el Web App del .gs esté publicado con "Cualquier usuario".</small></div></div>`;
+}
+function v8SupervisorVista(ex,tar){
+  const exs=(ex.excepciones||[]).slice(0,20);
+  const tars=(tar.tareas||[]).filter(t=>t.ESTADO==='ACTIVA').slice(0,10);
+  let h=`<div class="v8-kpi-grid"><div class="v8-kpi"><div class="n">${exs.length}</div><div class="t">Testigos abiertos</div></div><div class="v8-kpi"><div class="n">${tars.length}</div><div class="t">Tareas activas</div></div></div>`;
+  if(!exs.length&&!tars.length)return h+'<div class="card"><div class="v8-empty">Nada reclama intervención.</div></div>';
+  exs.forEach(x=>{
+    const exId=v8Esc(x.ID_EXCEPCION||'');
+    h+=`<div class="v8-item"><div class="v8-item-head"><div><div class="v8-item-title">${v8Esc(x.ASUNTO||x.TIPO)}</div><div class="v8-item-meta">${v8Esc(x.PLACA||'')} · ${v8Esc(x.CONTEXTO||'')}</div></div><span class="mini-status ${x.GRAVEDAD==='CRITICA'?'bad':'warn'}">${v8Esc(x.GRAVEDAD||'')}</span></div>
+      <div class="v8-actions"><button class="v8-action warn" onclick="v8AccionMover('${exId}')">Mover</button><button class="v8-action good" onclick="v8AccionResolver('${exId}')">Resolver</button></div></div>`;
+  });
+  tars.forEach(t=>{
+    h+=`<div class="v8-item"><div class="v8-item-title">${v8Esc(t.NOMBRE||'')}</div><div class="v8-item-meta">${v8Esc(t.CONTRATISTA||'')} · ${v8Esc(t.BARRIO||'')} · Meta ${t.META_ML||0} ML</div></div>`;
+  });
+  return h;
+}
+function v8ClienteVista(tar){
+  const tars=(tar.tareas||[]).slice(0,20);
+  if(!tars.length)return '<div class="card"><div class="v8-empty">Sin tareas asignadas.<br><small>Si escribiste tu nombre con el contratista incluido (ej: "Ingemac Admin"), aparecerán aquí.</small></div></div>';
+  return tars.map(t=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(t.NOMBRE||'')}</div><div class="v8-item-meta">${v8Esc(t.BARRIO||'')} · Meta ${t.META_ML||0} ML · ${v8Esc(t.ESTADO||'')}</div>
+    <div class="v8-actions"><button class="v8-action good" onclick="v8AsignarPlaca('${v8Esc(t.ID_TAREA||'')}')">Asignar placa</button></div></div>`).join('');
+}
+function v8OficinaVista(tar){
+  const tars=(tar.tareas||[]).slice(0,20);
+  let h='<div class="v8-actions" style="margin-bottom:12px"><button class="v8-action" onclick="v8NuevaTarea()">+ Nueva tarea</button></div>';
+  if(!tars.length)return h+'<div class="card"><div class="v8-empty">Sin tareas registradas.</div></div>';
+  tars.forEach(t=>{h+=`<div class="v8-item"><div class="v8-item-title">${v8Esc(t.NOMBRE||'')}</div><div class="v8-item-meta">${v8Esc(t.CONTRATISTA||'')} · ${v8Esc(t.BARRIO||'')} · ${v8Esc(t.ESTADO||'')}</div></div>`});
+  return h;
+}
+function v8InspectorVista(){
+  return `<div class="card">
+    <div class="section-label">Observación independiente</div>
+    <label>Placa</label><input id="v8-i-placa" type="text" placeholder="Ej. KPN 602">
+    <label>Barrio / zona</label><input id="v8-i-barrio" type="text" placeholder="Ej. El pozón">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label>ML reportado</label><input id="v8-i-mlr" type="number"></div>
+      <div><label>ML observado</label><input id="v8-i-mlo" type="number"></div>
+    </div>
+    <label>¿Coincide con estado reportado?</label>
+    <select id="v8-i-coincide"><option value="">No comprobado</option><option value="SI">Sí</option><option value="NO">No</option></select>
+    <label>Contexto de campo</label><textarea id="v8-i-contexto" rows="3"></textarea>
+    <label>Hallazgo</label><textarea id="v8-i-hallazgo" rows="2"></textarea>
+    <div class="toggle2"><button id="v8-i-no" class="sel" onclick="v8Interv(false)">Solo evidencia</button><button id="v8-i-si" onclick="v8Interv(true)">Requiere intervención</button></div>
+    <button class="btn" onclick="v8GuardarObservacion()">Guardar observación</button>
+  </div>`;
+}
+let V8_INTERV=false;
+function v8Interv(v){V8_INTERV=v;document.getElementById('v8-i-no').classList.toggle('sel',!v);document.getElementById('v8-i-si').classList.toggle('sel',v)}
+
+async function v8GuardarObservacion(){
+  const b={
+    placa:document.getElementById('v8-i-placa').value.trim(),
+    barrio:document.getElementById('v8-i-barrio').value.trim(),
+    mlReportado:Number(document.getElementById('v8-i-mlr').value)||null,
+    mlEstimado:Number(document.getElementById('v8-i-mlo').value)||null,
+    estadoCoincide:document.getElementById('v8-i-coincide').value||null,
+    contexto:document.getElementById('v8-i-contexto').value.trim(),
+    hallazgo:document.getElementById('v8-i-hallazgo').value.trim(),
+    reclamaIntervencion:V8_INTERV
+  };
+  if(!b.placa||!b.barrio){toast('Placa y barrio son necesarios');return}
+  await enviarGestion('observacionInspector',b);
+  toast('✅ Observación registrada');
+  document.getElementById('v8-i-placa').value='';
+  document.getElementById('v8-i-barrio').value='';
+  document.getElementById('v8-i-mlr').value='';
+  document.getElementById('v8-i-mlo').value='';
+  document.getElementById('v8-i-contexto').value='';
+  document.getElementById('v8-i-hallazgo').value='';
+}
+async function v8AccionMover(id){
+  const rol=prompt('Nuevo rol (supervisor/cliente/cctv/inspector)','supervisor');
+  if(!rol)return;
+  await enviarGestion('moverTestigo',{idTestigo:id,nuevoRol:rol});
+  toast('✅ Movido');v8CargarVista();
+}
+async function v8AccionResolver(id){
+  const nota=prompt('Nota de resolución','')||'';
+  await enviarGestion('resolverTestigo',{idTestigo:id,resultado:'NORMALIZADO',nota});
+  toast('✅ Resuelto');v8CargarVista();
+}
+async function v8AsignarPlaca(idTarea){
+  const placa=prompt('Placa a asignar','');
+  if(!placa)return;
+  await enviarGestion('asignarPlaca',{idTarea,placa});
+  toast('✅ Placa asignada');v8CargarVista();
+}
+async function v8NuevaTarea(){
+  const nombre=prompt('Nombre de la tarea','');if(!nombre)return;
+  const contratista=prompt('Contratista','')||'';
+  const barrio=prompt('Barrio','')||'';
+  const metaML=Number(prompt('Meta ML','0'))||0;
+  const metaJornadas=Number(prompt('Meta jornadas','0'))||0;
+  await enviarGestion('crearTarea',{nombre,contratista,barrio,metaML,metaJornadas});
+  toast('✅ Tarea creada');v8CargarVista();
+}
+
+/* ==================== CCTV ==================== */
+async function cargarListaCCTV(){
+  const cont=document.getElementById('cctv-lista');
+  if(API_URL.includes('PEGA_AQUI')){cont.innerHTML='<div class="v8-empty">Configura API_URL.</div>';return}
+  cont.innerHTML='<div class="v8-empty">Cargando tramos…</div>';
+  try{
+    const d=await v8ApiGet('excepciones',{});
+    const tramos=(d.excepciones||[]).filter(x=>x.TIPO==='TRAMO_REINCIDENTE');
+    if(!tramos.length){cont.innerHTML='<div class="v8-empty">Sin tramos pendientes.</div>';return}
+    cont.innerHTML=tramos.map(t=>{
+      const id=v8Esc(t.ID_EXCEPCION||'');
+      const ctx=v8Esc(t.CONTEXTO||'');
+      return `<div class="v8-item">
+        <div class="v8-item-title">${v8Esc(t.PLACA||'')} · ${ctx}</div>
+        <div class="v8-actions">
+          <button class="v8-action good" onclick="cctvVerificar('${id}','${ctx}','CONFORME')">Conforme</button>
+          <button class="v8-action bad" onclick="cctvVerificar('${id}','${ctx}','NO CONFORME')">No conforme</button>
+        </div></div>`;
+    }).join('');
+  }catch(e){cont.innerHTML='<div class="v8-empty">Error de conexión al gestor.</div>'}
+}
+async function cctvVerificar(idTestigo,contexto,resultado){
+  const obs=prompt('Observación','')||'';
+  if(resultado==='CONFORME'){
+    await enviarGestion('resolverTestigo',{idTestigo,resultado:'CONFORME_CCTV',nota:obs});
+  }else{
+    const tramo=(contexto.match(/Tramo\s+(\S+)/)||[])[1]||'';
+    await enviarGestion('verificacionCCTV',{placa:'',tramo,resultado:'NO CONFORME',observacion:obs});
+  }
+  toast('✅ Registrado');cargarListaCCTV();
+}
+function cerrarJornadaCCTV(){
+  toast('Cerrando CCTV');
+  setTimeout(()=>{mostrarPantalla('screen-acceso-v8');V8.rol=null;v8Init();},800);
+}
+
+
+/* ==================== V9.17 PREVENTIVO · VISTAS POR MISIÓN ==================== */
+async function v917CargarSupervisor(){
+  if(V8.tab==='cortes'){
+    const d=await v8ApiGet('cortesPendientes',{}), xs=d.cortes||[];
+    return `<div class="card"><div class="section-label">Corte semanal</div><div class="hint">El corte no modifica el pasado; decide qué continúa, qué se ajusta y qué se cierra.</div></div>`+
+      (xs.length?xs.map(x=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(x.nombre||x.idTarea)}</div><div class="v8-item-meta">${v8Esc(x.contratista)} · ${v8Esc(x.barrio)}${x.corteAbierto?' · CORTE ABIERTO':''}</div><div class="v8-actions"><button class="v8-action" onclick="v917AbrirCorte('${v8Esc(x.idTarea)}')">${x.corteAbierto?'Ver corte':'Preparar corte'}</button></div></div>`).join(''):'<div class="card"><div class="v8-empty">Sin tareas activas para corte.</div></div>');
+  }
+  const d=await v8ApiGet('supervisorBandeja',{}), c=d.conteos||{}, dec=d.requiereDecision||[], ges=d.enGestion||[];
+  let h=`<div class="v8-kpi-grid"><div class="v8-kpi"><div class="n">${c.requiereDecision||0}</div><div class="t">Requieren decisión</div></div><div class="v8-kpi"><div class="n">${c.enGestion||0}</div><div class="t">En gestión</div></div></div>`;
+  if(!dec.length)h+='<div class="card"><div class="v8-empty">Nada reclama una decisión del Supervisor.</div></div>';
+  dec.forEach(x=>h+=`<div class="v8-item"><div class="v8-item-head"><div><div class="v8-item-title">${v8Esc(x.asunto)}</div><div class="v8-item-meta">${v8Esc(x.placa)} · ${v8Esc(x.contexto)}</div></div><span class="mini-status ${String(x.efecto).toUpperCase()==='PARALIZA'?'bad':'warn'}">${v8Esc(x.efecto)}</span></div><div class="v8-actions"><button class="v8-action warn" onclick="v8AccionMover('${v8Esc(x.idTestigo)}')">Gestionar</button><button class="v8-action good" onclick="v8AccionResolver('${v8Esc(x.idTestigo)}')">Cerrar testigo</button></div></div>`);
+  if(ges.length)h+=`<div class="card"><div class="section-label">En gestión · ${ges.length}</div><div class="hint">Visibles como contexto; no reclaman decisión mientras su responsable natural gestiona.</div></div>`;
+  return h;
+}
+async function v917AbrirCorte(idTarea){
+  try{const d=await v8ApiGet('corteSemanal',{idTarea}); const c=d.corte||d;
+    const decision=prompt('Decisión del corte: CONTINUA, AJUSTA o CIERRA','CONTINUA'); if(!decision)return;
+    const nota=prompt('Nota breve del corte','')||'';
+    let extra={};if(decision.toUpperCase()==='CIERRA'){extra.queSalioBien=prompt('¿Qué salió bien?','')||'';extra.queSalioMal=prompt('¿Qué salió mal?','')||'';extra.aprendizaje=prompt('Aprendizaje','')||'';if(!extra.queSalioBien||!extra.queSalioMal||!extra.aprendizaje){toast('El cierre requiere las tres respuestas');return}}await enviarGestion('decisionCorte',Object.assign({idCorte:c.ID_CORTE||c.idCorte,decision:decision.toUpperCase(),nota},extra)); toast('✅ Corte registrado');v8CargarVista();
+  }catch(e){toast('No fue posible preparar el corte: '+e.message)}
+}
+function v917InspectorVista(misiones){
+  const ms=misiones||[];
+  let h='<div class="card"><div class="section-label">Misiones de verificación</div><div class="hint">Observa primero. El Motor interpreta el efecto.</div></div>';
+  if(!ms.length)h+='<div class="card"><div class="v8-empty">Sin misiones pendientes. Puedes reportar un hallazgo espontáneo.</div></div>';
+  ms.slice(0,20).forEach(m=>h+=`<div class="v8-item"><div class="v8-item-title">${v8Esc(m.TIPO_MISION||m.TIPO||'Verificación')}</div><div class="v8-item-meta">${v8Esc(m.PLACA||'')} · ${v8Esc(m.BARRIO||'')} · ${v8Esc(m.OBJETO_VERIFICACION||m.COMPONENTE||'')}</div></div>`);
+  h+=`<div class="card"><div class="section-label">Reportar condición / hallazgo</div><label>Placa</label><input id="v917-i-placa"><label>Barrio / zona</label><input id="v917-i-barrio"><label>Dominio</label><select id="v917-i-dom"><option>EQUIPO</option><option>DOTACION</option><option>PERSONAL</option><option>SST</option><option>SEÑALIZACION</option><option>PROCEDIMIENTO</option><option>OTRA</option></select><label>Hecho observado</label><textarea id="v917-i-hecho" rows="3"></textarea><label>Evidencia</label><textarea id="v917-i-evid" rows="2"></textarea><button class="btn" onclick="v917GuardarCondicion()">Registrar observación</button></div>`;
+  return h;
+}
+async function v917GuardarCondicion(){
+  const b={placa:document.getElementById('v917-i-placa').value.trim(),barrio:document.getElementById('v917-i-barrio').value.trim(),dominio:document.getElementById('v917-i-dom').value,hecho:document.getElementById('v917-i-hecho').value.trim(),evidencia:document.getElementById('v917-i-evid').value.trim(),origenConocimiento:'DIRECTO'};
+  if(!b.hecho){toast('Describe el hecho observado');return} await enviarGestion('condicionInspector',b);toast('✅ Observación enviada al Motor');v8CargarVista();
+}
+function v917AguaVista(){return `<div class="card"><div class="section-label">Consumo de agua</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div><label>Desde</label><input id="v917-agua-desde" type="date"></div><div><label>Hasta</label><input id="v917-agua-hasta" type="date"></div></div><button class="btn" onclick="v917ConsultarAgua()">Consultar m³</button><div id="v917-agua-res" style="margin-top:12px"></div></div>`}
+async function v917ConsultarAgua(){const desde=document.getElementById('v917-agua-desde').value,hasta=document.getElementById('v917-agua-hasta').value;if(!desde||!hasta){toast('Selecciona desde y hasta');return}const d=await v8ApiGet('oficinaAgua',{desde,hasta});document.getElementById('v917-agua-res').innerHTML=`<div class="v8-kpi"><div class="n">${Number(d.m3Total||0).toLocaleString('es-CO')}</div><div class="t">m³ trazables</div></div>`}
+function v917ClienteVista(tar,ex){
+  const contratista=v8DetectarContratista(), tars=(tar.tareas||[]).filter(t=>!contratista||normHtml_(t.CONTRATISTA)===normHtml_(contratista));
+  const xs=(ex.excepciones||[]).filter(x=>String(x.RESPONSABLE_ROL||'').toLowerCase()==='cliente'&&(!contratista||normHtml_(x.RESPONSABLE||x.CONTRATISTA)===normHtml_(contratista)));
+  let h='<div class="card"><div class="section-label">Programación propia</div><div class="hint">Asigna una placa disponible. El Motor rechazará solapamientos.</div></div>';
+  tars.slice(0,30).forEach(t=>h+=`<div class="v8-item"><div class="v8-item-title">${v8Esc(t.NOMBRE||t.ID_TAREA)}</div><div class="v8-item-meta">${v8Esc(t.BARRIO||'')} · ${v8Esc(t.ESTADO||'')}</div><div class="v8-actions"><button class="v8-action good" onclick="v8AsignarPlaca('${v8Esc(t.ID_TAREA||'')}')">Asignar placa</button></div></div>`);
+  h+=`<div class="card"><div class="section-label">Gestiones abiertas · ${xs.length}</div></div>`;
+  xs.slice(0,30).forEach(x=>h+=`<div class="v8-item"><div class="v8-item-title">${v8Esc(x.ASUNTO||x.TIPO)}</div><div class="v8-item-meta">${v8Esc(x.PLACA||'')} · ${v8Esc(x.CONTEXTO||'')}</div><div class="v8-actions"><button class="v8-action" onclick="v917GestionContratista('${v8Esc(x.ID_EXCEPCION)}')">Reportar gestión</button></div></div>`); return h;
+}
+function normHtml_(x){return String(x||'').trim().toLowerCase()}
+async function v917GestionContratista(id){const respuesta=prompt('Gestión realizada / estado actual','');if(!respuesta)return;await enviarGestion('respuestaContratista',{idTestigo:id,accion:'REPORTAR_GESTION',respuesta});toast('✅ Gestión reportada');v8CargarVista()}
+function v917OficinaVista(tar){
+  const tars=tar.tareas||[]; let h='<div class="v8-actions" style="margin-bottom:12px"><button class="v8-action" onclick="v8NuevaTarea()">+ Programar tarea</button></div>';
+  tars.slice(0,30).forEach(t=>h+=`<div class="v8-item"><div class="v8-item-title">${v8Esc(t.NOMBRE||t.ID_TAREA)}</div><div class="v8-item-meta">${v8Esc(t.CONTRATISTA||'')} · ${v8Esc(t.BARRIO||'')} · ${v8Esc(t.ESTADO||'')}</div></div>`); return h;
+}
+async function v8CargarVista(){
+  const b=document.getElementById('v8-role-body');if(!b)return;if(API_URL.includes('PEGA_AQUI')){b.innerHTML=v8VistaLocal();return}b.innerHTML='<div class="v8-empty">Cargando…</div>';
+  try{
+    if(V8.rol==='supervisor')b.innerHTML=await v917CargarSupervisor();
+    else if(V8.rol==='cliente'){const [tar,ex]=await Promise.all([v8ApiGet('tareas',{}),v8ApiGet('excepciones',{})]);b.innerHTML=v917ClienteVista(tar,ex);}
+    else if(V8.rol==='oficina'){if(V8.tab==='agua')b.innerHTML=v917AguaVista();else b.innerHTML=v917OficinaVista(await v8ApiGet('tareas',{}));}
+    else if(V8.rol==='inspector'){const d=await v8ApiGet('misionesInspector',{});b.innerHTML=v917InspectorVista(d.misiones||d.verificaciones||[]);}
+  }catch(e){b.innerHTML=`<div class="card"><div class="v8-empty">No fue posible cargar esta vista.<br><small>${v8Esc(e.message||e)}</small></div></div>`}
+}
+async function v8NuevaTarea(){
+  const nombre=prompt('Frente / nombre de la tarea','');if(!nombre)return;const contratista=prompt('Contratista','')||'';const barrio=prompt('Barrio / sector','')||'';const objetivo=prompt('Objetivo / directriz','Mantenimiento preventivo de los tramos programados')||'';const vigenciaIni=prompt('Inicio (AAAA-MM-DD)','')||'';const vigenciaFin=prompt('Fin (AAAA-MM-DD)','')||'';
+  if(!contratista||!barrio){toast('Contratista y barrio/sector son necesarios');return}await enviarGestion('crearTarea',{nombre,contratista,barrio,objetivo,vigenciaIni,vigenciaFin});toast('✅ Tarea programada');v8CargarVista();
+}
+
+async function cargarListaCCTV(){
+  const cont=document.getElementById('cctv-lista');if(!cont)return;cont.innerHTML='<div class="v8-empty">Cargando selección del Motor…</div>';
+  try{const [d,g]=await Promise.all([v8ApiGet('cctv',{estado:'PENDIENTE'}),v8ApiGet('cctvGrupos',{})]);const xs=d.cctv||[],gs=(g.grupos||[]).filter(x=>String(x.ESTADO||'')==='PENDIENTE_DECISION');
+    let h='<div class="card"><div class="section-label">Tramos seleccionados por el Motor</div><div class="hint">CCTV califica; no vuelve a escribir placa, barrio ni contexto.</div></div>';
+    if(!xs.length)h+='<div class="card"><div class="v8-empty">Sin tramos pendientes.</div></div>';
+    xs.slice(0,40).forEach(x=>h+=`<div class="v8-item"><div class="v8-item-title">Tramo ${v8Esc(x.TRAMO||'')}</div><div class="v8-item-meta">${v8Esc(x.PLACA||'')} · ${v8Esc(x.SECTOR||'')} · ${Number(x.ML||0)} ML</div><div class="v8-actions"><button class="v8-action good" onclick="v917CctvResultado('${v8Esc(x.ID_CCTV)}','CONFORME')">Conforme</button><button class="v8-action bad" onclick="v917CctvResultado('${v8Esc(x.ID_CCTV)}','NO_CONFORME')">No conforme</button></div></div>`);
+    if(gs.length)h+='<div class="card"><div class="section-label">Grupos pendientes de decisión</div></div>'+gs.map(x=>`<div class="v8-item"><div class="v8-item-title">Grupo ${v8Esc(x.ID_GRUPO)}</div><div class="v8-item-meta">${v8Esc(x.PLACA||'')} · ${v8Esc(x.SECTOR||'')}</div><div class="v8-actions"><button class="v8-action good" onclick="v917DecisionGrupo('${v8Esc(x.ID_GRUPO)}','APROBADO')">Aprobado</button><button class="v8-action bad" onclick="v917DecisionGrupo('${v8Esc(x.ID_GRUPO)}','NO_APROBADO')">No aprobado</button></div></div>`).join('');
+    cont.innerHTML=h;
+  }catch(e){cont.innerHTML=`<div class="v8-empty">No fue posible cargar CCTV.<br><small>${v8Esc(e.message||e)}</small></div>`}
+}
+async function v917CctvResultado(idCCTV,resultado){const observacion=prompt('Observación técnica','')||'';await enviarGestion('verificacionCCTV',{idCCTV,resultado,observacion});toast('✅ Resultado registrado');cargarListaCCTV()}
+async function v917DecisionGrupo(idGrupo,decision){const nota=prompt('Nota de decisión del grupo','')||'';await enviarGestion('decisionGrupoCCTV',{idGrupo,decision,nota});toast('✅ Decisión registrada');cargarListaCCTV()}
+
+/* ==================== ARRANQUE ==================== */
+window.addEventListener('load', ()=>{
+  v8Init();
+});
+</script>
+
+
+<!-- ===== V9.23 MÓVIL · TAREA → CIRCUNSTANCIA → ROL → CORTE ===== -->
+<style>
+:root{--touch:48px}
+html{font-size:16px} body{overscroll-behavior-y:none}
+.screen{width:100%;max-width:480px;padding:14px 12px 34px}
+.card{padding:14px;border-radius:16px;margin-bottom:12px}
+.v8-topbar{position:sticky;top:0;z-index:12;background:rgba(13,15,20,.96);padding:8px 0 10px;backdrop-filter:blur(10px)}
+.v8-tabs{position:sticky;top:58px;z-index:11;background:rgba(13,15,20,.96);padding-top:5px}
+.v8-tab,.v8-action,.role-card-v8,.btn,.action-btn{min-height:var(--touch);touch-action:manipulation}
+.v8-action{padding:11px 12px}.v8-item{padding:14px;border-radius:14px}
+.v8-item-title{font-size:15px}.v8-item-meta{font-size:12px;line-height:1.5}
+.v923-context{background:#171923;border:1px solid var(--line);border-radius:12px;padding:11px;margin:9px 0;font-size:12px;line-height:1.5}
+.v923-row{display:flex;gap:8px;align-items:center;justify-content:space-between}.v923-grow{flex:1}
+.v923-badge{display:inline-flex;align-items:center;min-height:28px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:800;color:var(--sub)}
+.v923-badge.bad{color:#fecdd3;border-color:#8c3b45;background:#3d1e25}.v923-badge.warn{color:#fde2a5;border-color:#8b621d;background:#3b2c14}.v923-badge.good{color:#b9f6d0;border-color:#276b47;background:#173626}
+.v923-form label{font-size:12px;margin:12px 0 6px}.v923-form input,.v923-form select,.v923-form textarea{font-size:16px;padding:13px}
+.v923-inline{display:grid;grid-template-columns:1fr 1fr;gap:8px}.v923-inline.one{grid-template-columns:1fr}
+.v923-lock{opacity:.65;pointer-events:none}.v923-sending{position:relative}.v923-sending:after{content:'Enviando…';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:inherit;border-radius:inherit}
+.v923-safe{font-size:11px;color:var(--sub);margin-top:7px;line-height:1.35}
+@media(max-width:360px){.screen{padding-left:9px;padding-right:9px}.v923-inline{grid-template-columns:1fr}.v8-kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+<script>
+/* V9.23 UI: compatible con V9.17 y preparada para Motor V9.23 */
+const V923_UI={locks:new Set(),cache:{},lastAction:null};
+function v923Id(){try{return crypto.randomUUID()}catch(e){return 'a_'+Date.now()+'_'+Math.random().toString(36).slice(2)}}
+function v923BtnLock(btn,on,label){if(!btn)return; if(on){btn.dataset.v923Text=btn.textContent;btn.disabled=true;btn.classList.add('v923-sending');if(label)btn.textContent=label}else{btn.disabled=false;btn.classList.remove('v923-sending');if(btn.dataset.v923Text)btn.textContent=btn.dataset.v923Text}}
+async function v923Once(key,btn,fn){if(V923_UI.locks.has(key))return {ok:false,duplicada:true};V923_UI.locks.add(key);v923BtnLock(btn,true);try{return await fn()}finally{setTimeout(()=>{V923_UI.locks.delete(key);v923BtnLock(btn,false)},650)}}
+function v923ActionData(datos){const d=Object.assign({},datos||{});if(!d.actionId)d.actionId=v923Id();return d}
+
+/* Sustitución autoritativa: todo envío de gestión lleva actionId. */
+async function enviarGestion(tipo,datos){
+  const d=v923ActionData(datos);
+  const payload={tipo,datos:Object.assign({actor:V8.nombre||'',nombre:V8.nombre||'',rol:V8.rol||'',fechaCliente:nowISO()},d),placa:d.placa||'',contratista:d.contratista||'',barrio:d.barrio||'',actor:V8.nombre||''};
+  V923_UI.lastAction={tipo,datos:d,ts:Date.now()};
+  if(!navigator.onLine){encolarPayload(payload);return {ok:true,offline:true,actionId:d.actionId}}
+  try{await enviarPayload(payload);return{ok:true,actionId:d.actionId}}catch(e){encolarPayload(payload);return{ok:true,offline:true,actionId:d.actionId}}
+}
+
+async function v923ApiPreferida(nueva,antigua,params){
+  try{const d=await v8ApiGet(nueva,params||{});if(d&&d.ok!==false&&!d.offline)return d}catch(e){}
+  return antigua?await v8ApiGet(antigua,params||{}):{ok:false};
+}
+function v923Status(x){const s=String(x||'PENDIENTE').toUpperCase();const c=/CERR|ATEND|CONFORME|COMPLET/.test(s)?'good':/CRIT|NO_CONFORME|VENC/.test(s)?'bad':'warn';return `<span class="v923-badge ${c}">${v8Esc(s.replaceAll('_',' '))}</span>`}
+function v923Empty(t){return `<div class="card"><div class="v8-empty">${v8Esc(t)}</div></div>`}
+function v923Val(id){const e=document.getElementById(id);return e?String(e.value||'').trim():''}
+
+/* ---------------- SUPERVISOR ---------------- */
+async function v923Supervisor(){
+  const d=await v923ApiPreferida('supervisorV923','supervisorBandeja',{});
+  if(d.resumen){
+    let h=`<div class="v8-kpi-grid"><div class="v8-kpi"><div class="n">${d.resumen.requiereDecision||0}</div><div class="t">Decisiones</div></div><div class="v8-kpi"><div class="n">${d.resumen.enGestion||0}</div><div class="t">En gestión</div></div><div class="v8-kpi"><div class="n">${d.resumen.necesidadesSinAsignar||0}</div><div class="t">Por asignar</div></div><div class="v8-kpi"><div class="n">${d.resumen.cortesAbiertos||0}</div><div class="t">Cortes</div></div></div>`;
+    const xs=d.bandeja||[]; if(!xs.length)h+=v923Empty('✓ Sin acciones pendientes para el Supervisor.');
+    xs.slice(0,40).forEach(x=>{h+=`<div class="v8-item"><div class="v8-item-head"><div class="v923-grow"><div class="v8-item-title">${v8Esc(x.ASUNTO||x.TIPO||'Asunto')}</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} ${x.PLACA?'· '+v8Esc(x.PLACA):''} ${x.TRAMO?'· Tramo '+v8Esc(x.TRAMO):''}</div></div>${v923Status(x.ESTADO||x.CIRCUNSTANCIA)}</div><div class="v923-context">${v8Esc(x.CONTEXTO||'')}</div>${x.TIPO==='NECESIDAD_VERIFICACION'?`<div class="v8-actions"><button class="v8-action warn" onclick="v923AbrirMision('${v8Esc(x.REFERENCIA)}','${v8Esc(x.ID_TAREA)}','${v8Esc(x.PLACA||'')}')">Asignar misión</button></div>`:''}</div>`});
+    return h;
+  }
+  return await v917CargarSupervisor();
+}
+function v923AbrirMision(idNecesidad,idTarea,placa){
+  const inspector=prompt('Inspector a asignar','');if(!inspector)return;
+  const tipo=(prompt('Tipo: OPERATIVA, ADMINISTRATIVA o DE_INTERES','OPERATIVA')||'').toUpperCase();if(!tipo)return;
+  const motivo=prompt('Qué necesita observar / conocer','');if(!motivo)return;
+  if(!confirm(`Asignar misión a ${inspector}?\n\n${idTarea}${placa?' · '+placa:''}\n${motivo}`))return;
+  v923Once('mision:'+idNecesidad,null,async()=>{await enviarGestion('crearMisionInspector',{idNecesidad,idTarea,placa,inspector,tipoMision:tipo,relevancia:'IMPORTANTE',prioridad:'PARA_CORTE',objeto:placa?'PLACA':'TAREA',motivo,contexto:motivo});toast('✅ Misión asignada');v8CargarVista()});
+}
+
+/* ---------------- INSPECTOR ---------------- */
+async function v923Inspector(){
+  const d=await v923ApiPreferida('inspectorV923','misionesInspector',{inspector:V8.nombre||''});
+  const ms=d.misiones||d.verificaciones||[], tareas=d.tareas||[];V923_UI.cache.inspectorTareas=tareas;
+  let h='<div class="card"><div class="section-label">Mis misiones</div><div class="hint">El sistema muestra el contexto conocido. Tú reportas únicamente lo que observas.</div></div>';
+  if(!ms.length)h+=v923Empty('✓ Sin misiones pendientes.');
+  ms.slice(0,25).forEach(m=>{h+=`<div class="v8-item"><div class="v8-item-head"><div><div class="v8-item-title">${v8Esc(m.TIPO_MISION||m.TIPO||'Verificación')}</div><div class="v8-item-meta">${v8Esc(m.ID_TAREA||'')} ${m.PLACA?'· '+v8Esc(m.PLACA):''}</div></div>${v923Status(m.ESTADO)}</div><div class="v923-context">${v8Esc(m.CONTEXTO_MISION||m.MOTIVO||'')}</div></div>`});
+  const opts=tareas.map(t=>`<option value="${v8Esc(t.idTarea||t.ID_TAREA||'')}">${v8Esc((t.nombre||t.NOMBRE||t.idTarea||t.ID_TAREA||'')+' · '+(t.barrio||t.BARRIO||''))}</option>`).join('');
+  h+=`<div class="card v923-form"><div class="section-label">Cierre de contexto</div><div class="hint">Solo informa lo que conoces. El Motor completa y contrasta el resto.</div><label>Tarea</label><select id="v923-ctx-tarea"><option value="">Seleccionar…</option>${opts}</select><div class="v923-inline"><div><label>Fecha</label><input id="v923-ctx-fecha" type="date"></div><div><label>Hora inicio</label><input id="v923-ctx-hora" type="time"></div></div><div class="v923-inline"><div><label>Placa</label><input id="v923-ctx-placa" autocomplete="off"></div><div><label>ML totales</label><input id="v923-ctx-ml" type="number" min="0" step="0.01" inputmode="decimal"></div></div><button class="btn" onclick="v923EnviarContexto(this)">Enviar cierre de contexto</button><div class="v923-safe">No se solicita barrio, contratista, duración ni turno: el sistema ya los conoce o los deduce.</div></div>`;
+  h+=`<div class="card v923-form"><div class="section-label">Reportar observación</div><label>Tarea relacionada</label><select id="v923-obs-tarea"><option value="">Sin Tarea / no puedo determinar</option>${opts}</select><label>Placa, si la conoces</label><input id="v923-obs-placa" autocomplete="off"><label>¿Qué observaste?</label><textarea id="v923-obs-hecho" rows="3"></textarea><button class="btn secondary" onclick="v923EnviarObservacion(this)">Registrar observación</button></div>`;
+  return h;
+}
+async function v923EnviarContexto(btn){const idTarea=v923Val('v923-ctx-tarea'),fecha=v923Val('v923-ctx-fecha'),horaInicio=v923Val('v923-ctx-hora'),placa=v923Val('v923-ctx-placa').toUpperCase(),mlTotal=v923Val('v923-ctx-ml');if(!idTarea||!fecha||!horaInicio||!placa||mlTotal===''){toast('Completa Tarea, fecha, hora, placa y ML');return}await v923Once('ctx:'+idTarea+':'+fecha+':'+placa,btn,async()=>{await enviarGestion('contextoInspectorTarea',{idTarea,fecha,registros:[{placa,horaInicio,mlTotal:Number(mlTotal)}]});toast('✅ Contexto registrado');v8CargarVista()})}
+async function v923EnviarObservacion(btn){const idTarea=v923Val('v923-obs-tarea'),placa=v923Val('v923-obs-placa').toUpperCase(),hecho=v923Val('v923-obs-hecho');if(!hecho){toast('Describe lo observado');return}await v923Once('obs:'+Date.now(),btn,async()=>{await enviarGestion('condicionInspector',{idTarea,placa,hecho,evidencia:'',origenConocimiento:'DIRECTO'});toast('✅ Observación enviada');v8CargarVista()})}
+
+/* ---------------- CONTRATISTA ---------------- */
+async function v923Contratista(){
+  const contratista=v8DetectarContratista();
+  const d=await v923ApiPreferida('contratistaV923',null,{contratista});
+  if(d&&Array.isArray(d.pendientes)){
+    const xs=d.pendientes;let h='<div class="card"><div class="section-label">Gestiones pendientes</div><div class="hint">El sistema muestra Tarea, placa, tramo y origen. Reporta solo la gestión realizada o el estado actual.</div></div>';if(!xs.length)h+=v923Empty('✓ Sin gestiones pendientes.');xs.slice(0,40).forEach(x=>{h+=`<div class="v8-item"><div class="v8-item-head"><div><div class="v8-item-title">${v8Esc(x.ASUNTO||x.TIPO)}</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} ${x.PLACA?'· '+v8Esc(x.PLACA):''} ${x.TRAMO?'· Tramo '+v8Esc(x.TRAMO):''}</div></div>${v923Status(x.ESTADO)}</div><div class="v923-context">${v8Esc(x.CONTEXTO||'')}</div><div class="v8-actions"><button class="v8-action" onclick="v923GestionContratista('${v8Esc(x.REFERENCIA||'')}','${v8Esc(x.TIPO||'')}',this)">Reportar gestión</button></div></div>`});return h;
+  }
+  const [tar,ex]=await Promise.all([v8ApiGet('tareas',{}),v8ApiGet('excepciones',{})]);return v917ClienteVista(tar,ex);
+}
+async function v923GestionContratista(ref,tipo,btn){const respuesta=prompt('Gestión realizada / estado actual','');if(!respuesta)return;const evento=tipo==='CCTV_NO_CONFORME'?'gestionContratistaCCTV':'respuestaContratista';const datos=evento==='gestionContratistaCCTV'?{idCCTV:ref,respuesta}:{idTestigo:ref,accion:'REPORTAR_GESTION',respuesta};await v923Once('ges:'+ref,btn,async()=>{await enviarGestion(evento,datos);toast('✅ Gestión reportada');v8CargarVista()})}
+
+/* ---------------- CCTV ---------------- */
+async function v917CctvResultado(idCCTV,resultado,btn){let observacion='';if(resultado==='NO_CONFORME'){observacion=prompt('Describe brevemente la condición observada','')||'';if(!observacion){toast('El NO APTO requiere una observación');return}}else if(!confirm('¿Registrar este tramo como CONFORME?'))return;await v923Once('cctv:'+idCCTV,btn,async()=>{await enviarGestion('verificacionCCTV',{idCCTV,resultado,observacion});toast('✅ Resultado registrado');cargarListaCCTV()})}
+
+/* Sustitución CCTV para pasar el botón y bloquear doble toque. */
+async function cargarListaCCTV(){
+  const cont=document.getElementById('cctv-lista');if(!cont)return;cont.innerHTML='<div class="v8-empty">Cargando selección del Motor…</div>';
+  try{const [d,g]=await Promise.all([v8ApiGet('cctv',{estado:'PENDIENTE'}),v8ApiGet('cctvGrupos',{})]);const xs=d.cctv||[],gs=(g.grupos||[]).filter(x=>String(x.ESTADO||'')==='PENDIENTE_DECISION');let h='<div class="card"><div class="section-label">Pendientes CCTV</div><div class="hint">Placa, tramo y contexto vienen del sistema. CCTV solo califica lo observado.</div></div>';if(!xs.length)h+=v923Empty('✓ Sin tramos pendientes.');xs.slice(0,40).forEach(x=>h+=`<div class="v8-item"><div class="v8-item-title">Tramo ${v8Esc(x.TRAMO||'')}</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} ${x.PLACA?'· '+v8Esc(x.PLACA):''} ${x.SECTOR?'· '+v8Esc(x.SECTOR):''} ${x.ML!==undefined?'· '+Number(x.ML||0)+' ML':''}</div><div class="v8-actions"><button class="v8-action good" onclick="v917CctvResultado('${v8Esc(x.ID_CCTV)}','CONFORME',this)">Conforme</button><button class="v8-action bad" onclick="v917CctvResultado('${v8Esc(x.ID_CCTV)}','NO_CONFORME',this)">No apto</button></div></div>`);if(gs.length)h+='<div class="card"><div class="section-label">Grupos pendientes de decisión</div></div>'+gs.map(x=>`<div class="v8-item"><div class="v8-item-title">Grupo ${v8Esc(x.ID_GRUPO)}</div><div class="v8-item-meta">${v8Esc(x.PLACA||'')} · ${v8Esc(x.SECTOR||'')}</div><div class="v8-actions"><button class="v8-action good" onclick="v917DecisionGrupo('${v8Esc(x.ID_GRUPO)}','APROBADO')">Aprobado</button><button class="v8-action bad" onclick="v917DecisionGrupo('${v8Esc(x.ID_GRUPO)}','NO_APROBADO')">No aprobado</button></div></div>`).join('');cont.innerHTML=h}catch(e){cont.innerHTML=`<div class="v8-empty">No fue posible cargar CCTV.<br><small>${v8Esc(e.message||e)}</small></div>`}
+}
+
+/* Vista principal V9.23 con fallback a V9.17. */
+async function v8CargarVista(){
+  const b=document.getElementById('v8-role-body');if(!b)return;if(API_URL.includes('PEGA_AQUI')){b.innerHTML=v8VistaLocal();return}b.innerHTML='<div class="v8-empty">Cargando…</div>';
+  try{if(V8.rol==='supervisor')b.innerHTML=await v923Supervisor();else if(V8.rol==='cliente')b.innerHTML=await v923Contratista();else if(V8.rol==='inspector')b.innerHTML=await v923Inspector();else if(V8.rol==='oficina'){if(V8.tab==='agua')b.innerHTML=v917AguaVista();else b.innerHTML=v917OficinaVista(await v8ApiGet('tareas',{}))}}catch(e){b.innerHTML=`<div class="card"><div class="v8-empty">No fue posible cargar esta vista.<br><small>${v8Esc(e.message||e)}</small></div></div>`}
+}
+</script>
+
+\n<!-- ===== ESTÁNDAR HERMANO V9.24 · MEMORIA + MÍNIMO INGRESO + ENVÍO SEGURO ===== -->
+<style>
+.v924-note{font-size:12px;color:var(--muted);margin-top:7px}.v924-pending{border-left:4px solid var(--warn)}
+.v924-history{display:grid;gap:7px;margin-top:10px}.v924-history>div{padding:9px 10px;border-left:2px solid var(--line);font-size:13px}
+.v924-warn{background:#fff6e8;border:1px solid #efd8aa;border-radius:12px;padding:10px;margin-top:9px;color:#704500}
+.v924-btn-sent{opacity:.72;pointer-events:none}
+</style>
+<script>
+const V924_NAV_KEY='mtto_multirrol_nav_v924';
+/* V9.24: una sola cola offline. La cola canónica SYNC_QUEUE_KEY conserva el payload completo,
+   incluido actionId y fechaHoraEvento. Evita que una misma acción viva en dos colas. */
+function v924LoadNav(){
+  try{return JSON.parse(sessionStorage.getItem('mtto_v924_nav')||'null');}catch(e){return null;}
+}
+function v924SaveNav(extra){
+  try{
+    var data=Object.assign({ts:Date.now(),nombre:V8.nombre||'',rol:V8.rol||'',tab:V8.tab||''},extra||{});
+    sessionStorage.setItem('mtto_v924_nav',JSON.stringify(data));
+  }catch(e){}
+}
+function v924Flush(){return procesarCola()}
+window.addEventListener('online',v924Flush);
+const _v8Tab924=v8Tab;v8Tab=function(t){V8.tab=t;v924SaveNav();return v8RenderRol()};
+const _v8RenderRol924=v8RenderRol;v8RenderRol=function(){v924SaveNav();return _v8RenderRol924()};
+async function v924Write(tipo,datos,btn,{confirmText='',key=''}={}){
+  if(btn?.dataset?.sending==='1')return {ok:false,duplicada:true};
+  if(confirmText&&!confirm(confirmText))return {ok:false,cancelada:true};
+  const actionId=btn?.dataset?.actionId||v924Id();if(btn){btn.dataset.actionId=actionId;btn.dataset.sending='1';btn.disabled=true;btn.dataset.oldText=btn.textContent;btn.textContent='Enviando…'}
+  const payload=Object.assign({},datos,{actionId,fechaHoraEvento:nowISO()});
+  try{const r=await enviarGestion(tipo,payload);if(r&&r.offline){if(btn)btn.textContent='⏳ Pendiente de sincronizar';toast('Guardado en el teléfono · pendiente de sincronización')}else{if(btn)btn.textContent='✓ Registrado';toast('✓ Registrado')}return r||{ok:true}}
+  catch(e){/* enviarGestion ya conserva el payload en la cola canónica cuando falla la transmisión. */if(btn)btn.textContent='⏳ Pendiente de sincronizar';toast('Guardado en el teléfono · pendiente de sincronización');return {ok:true,offline:true}}
+  finally{if(btn)setTimeout(()=>{btn.dataset.sending='0';btn.disabled=false;btn.textContent=btn.dataset.oldText||'Continuar';delete btn.dataset.actionId},1100)}
+}
+/* Inspector: lo conocido viene del sistema; solo Tarea + Fecha y filas Placa/Hora/ML. */
+async function v923Inspector(){
+  const d=await v923ApiPreferida('inspectorV923','misionesInspector',{inspector:V8.nombre||''});
+  const ms=d.misiones||d.verificaciones||[], tareas=d.tareas||[];V923_UI.cache.inspectorTareas=tareas;
+  let h='<div class="card"><div class="section-label">Mis misiones</div><div class="hint">El contexto conocido ya viene del sistema. Reporta únicamente lo observado.</div></div>';
+  if(!ms.length)h+=v923Empty('✓ Sin misiones pendientes.');
+  ms.slice(0,25).forEach(m=>{h+=`<div class="v8-item"><div class="v8-item-head"><div><div class="v8-item-title">${v8Esc(m.TIPO_MISION||m.TIPO||'Verificación')}</div><div class="v8-item-meta">${v8Esc(m.ID_TAREA||'')} ${m.PLACA?'· '+v8Esc(m.PLACA):''}</div></div>${v923Status(m.ESTADO)}</div><div class="v923-context">${v8Esc(m.CONTEXTO_MISION||m.MOTIVO||'')}</div></div>`});
+  const opts=tareas.map(t=>`<option value="${v8Esc(t.idTarea||t.ID_TAREA||'')}">${v8Esc((t.nombre||t.NOMBRE||t.idTarea||t.ID_TAREA||'')+' · '+(t.barrio||t.BARRIO||''))}</option>`).join('');
+  h+=`<div class="card v923-form"><div class="section-label">Cierre de contexto</div><div class="hint">Una fecha puede incluir varias placas. No se pide barrio, contratista, turno ni duración.</div><label>Tarea</label><select id="v923-ctx-tarea"><option value="">Seleccionar…</option>${opts}</select><label>Fecha</label><input id="v923-ctx-fecha" type="date"><div id="v924-ctx-rows"></div><button class="v8-action" type="button" onclick="v924AddCtxRow()">＋ Agregar placa</button><button class="btn" onclick="v924EnviarContexto(this)">Enviar cierre de contexto</button><div class="v924-note">La hora de envío se conserva automáticamente.</div></div>`;
+  h+=`<div class="card v923-form"><div class="section-label">Reportar observación</div><label>Tarea relacionada</label><select id="v923-obs-tarea"><option value="">Sin Tarea / no puedo determinar</option>${opts}</select><label>Placa, si la conoces</label><input id="v923-obs-placa" autocomplete="off"><label>¿Qué observaste?</label><textarea id="v923-obs-hecho" rows="3" maxlength="300"></textarea><label>Observación breve (opcional)</label><textarea id="v924-obs-breve" rows="2" maxlength="200"></textarea><button class="btn secondary" onclick="v924EnviarObservacion(this)">Registrar observación</button></div>`;
+  setTimeout(v924AddCtxRow,0);return h;
+}
+function v924AddCtxRow(){const c=document.getElementById('v924-ctx-rows');if(!c)return;const d=document.createElement('div');d.className='v923-inline';d.innerHTML='<div><label>Placa</label><input class="v924-placa" autocomplete="off" placeholder="Placa"></div><div><label>Hora inicio</label><input class="v924-hora" type="time"><label>ML totales</label><input class="v924-ml" type="number" min="0" step="0.01" inputmode="decimal"></div>';c.appendChild(d)}
+async function v924EnviarContexto(btn){const idTarea=v923Val('v923-ctx-tarea'),fecha=v923Val('v923-ctx-fecha');const rows=[...document.querySelectorAll('#v924-ctx-rows .v923-inline')].map(r=>({placa:r.querySelector('.v924-placa').value.trim().toUpperCase(),horaInicio:r.querySelector('.v924-hora').value,mlTotal:r.querySelector('.v924-ml').value})).filter(x=>x.placa||x.horaInicio||x.mlTotal!=='');if(!idTarea||!fecha||!rows.length||rows.some(x=>!x.placa||!x.horaInicio||x.mlTotal==='')){toast('Completa Tarea, fecha y cada placa con hora y ML');return}await v924Write('contextoInspectorTarea',{idTarea,fecha,registros:rows.map(x=>({...x,mlTotal:Number(x.mlTotal)}))},btn);v8CargarVista()}
+async function v924EnviarObservacion(btn){const hecho=v923Val('v923-obs-hecho');if(!hecho){toast('Describe lo observado');return}await v924Write('condicionInspector',{idTarea:v923Val('v923-obs-tarea'),placa:v923Val('v923-obs-placa').toUpperCase(),hecho,observacionBreve:v923Val('v924-obs-breve'),origenConocimiento:'DIRECTO'},btn);v8CargarVista()}
+/* Corte: concentración, no informe manual. */
+async function v917AbrirCorte(idTarea){try{const d=await v8ApiGet('corteSemanal',{idTarea});const c=d.corte||d;v924SaveNav({idTarea,corte:true});const b=document.getElementById('v8-role-body');const at=(c.atencion||c.pendientes||[]);b.innerHTML=`<button class="back" onclick="v8CargarVista()">‹ Cortes</button><div class="card"><div class="section-label">Corte semanal · ${v8Esc(idTarea)}</div><div class="hint">${v8Esc(c.periodo||'Período preparado por el Motor')}</div></div><div class="v8-kpi-grid"><div class="v8-kpi"><div class="n">${Number(c.mlComputable||c.ML_COMPUTABLE||0).toLocaleString('es-CO')}</div><div class="t">ML computables</div></div><div class="v8-kpi"><div class="n">${Number(c.intervenciones||c.jornadas||0)}</div><div class="t">Intervenciones</div></div></div>${Number(c.mlPorAclarar||0)>0?`<div class="v924-warn">⚠ ${Number(c.mlPorAclarar).toLocaleString('es-CO')} ML por aclarar</div>`:''}<div class="card"><div class="section-label">Requiere atención</div>${at.length?at.map(x=>`<div class="v924-warn">⚠ ${v8Esc(typeof x==='string'?x:(x.contexto||x.asunto||x.tipo||''))}</div>`).join(''):'<div class="v8-empty">✓ Sin acciones pendientes</div>'}</div><div class="card"><div class="section-label">Universo de Tarea</div><div class="v8-item-meta">Asignado: ${Number(c.metaMl||c.META_ML||0).toLocaleString('es-CO')} ML · Acumulado: ${Number(c.mlAcumulado||c.REAL_ML||0).toLocaleString('es-CO')} ML · Restante: ${Number(c.mlRestante||0).toLocaleString('es-CO')} ML</div><div class="v8-actions"><button class="v8-action good" onclick="v924DecisionCorte('${v8Esc(c.ID_CORTE||c.idCorte||'')}','CONTINUA',this)">Continúa</button><button class="v8-action warn" onclick="v924DecisionCorte('${v8Esc(c.ID_CORTE||c.idCorte||'')}','AJUSTA',this)">Ajusta</button><button class="v8-action bad" onclick="v924DecisionCorte('${v8Esc(c.ID_CORTE||c.idCorte||'')}','CIERRA',this)">Cierra</button></div></div>`}catch(e){toast('No fue posible preparar el corte: '+e.message)}}
+async function v924DecisionCorte(idCorte,decision,btn){let extra={};if(decision==='AJUSTA'){const ajuste=prompt('¿Qué debe ajustarse?','');if(!ajuste)return;extra.nota=ajuste}if(decision==='CIERRA'){if(!confirm('Cerrar la Tarea es una decisión definitiva. ¿Continuar?'))return;extra.queSalioBien=prompt('¿Qué salió bien?','')||'';extra.queSalioMal=prompt('¿Qué salió mal?','')||'';extra.aprendizaje=prompt('Aprendizaje','')||'';if(!extra.queSalioBien||!extra.queSalioMal||!extra.aprendizaje){toast('El cierre requiere las tres respuestas');return}}await v924Write('decisionCorte',Object.assign({idCorte,decision},extra),btn);v8CargarVista()}
+/* Gestión contratista: texto breve, contexto ya está en pantalla. */
+async function v923GestionContratista(ref,tipo,btn){const respuesta=prompt('Gestión realizada / estado actual (breve)','');if(!respuesta)return;const evento=tipo==='CCTV_NO_CONFORME'?'gestionContratistaCCTV':'respuestaContratista';const datos=evento==='gestionContratistaCCTV'?{idCCTV:ref,respuesta}:{idTestigo:ref,accion:'REPORTAR_GESTION',respuesta};await v924Write(evento,datos,btn);v8CargarVista()}
+setTimeout(()=>{const nav=v924LoadNav();if(nav&&Date.now()-nav.ts<86400000&&nav.nombre===V8.nombre&&nav.rol===V8.rol&&nav.tab)V8.tab=nav.tab;v924Flush()},250);
+</script>
+
+
+<script>
+/* V9.26 ROLES · contrato maestro. Oficina queda fuera del multirrol. */
+Object.assign(V8_ROLE_NAMES,{inspector:'Inspector',supervisor:'Supervisor',cliente:'Contratista',cctv:'CCTV'});
+delete V8_ROLE_NAMES.oficina;
+
+function v8RenderRol(){
+  mostrarPantalla('screen-rol-v8');
+  document.getElementById('v8-user-name').textContent=V8.nombre;
+  document.getElementById('v8-role-name').textContent=V8_ROLE_NAMES[V8.rol]||V8.rol;
+  const defs={
+    supervisor:{title:'Supervisor',sub:'Programa, decide y conduce la operación por excepción.',tabs:['inicio','tareas','inspector','cortes']},
+    inspector:{title:'Inspector',sub:'Verifica la realidad de campo y responde misiones.',tabs:['misiones','cierreInspector']},
+    cliente:{title:'Contratista',sub:'Administra su ejecución, placas y gestiones.',tabs:['pendientes','reporteJornada']}
+  };
+  const d=defs[V8.rol];
+  if(!d){v8CambiarRol();return;}
+  document.getElementById('v8-role-header').innerHTML=`<div class="card access-hero"><div class="brand-title" style="font-size:21px">${d.title}</div><div class="brand-sub">${d.sub}</div></div>`;
+  if(!d.tabs.includes(V8.tab))V8.tab=d.tabs[0];
+  document.getElementById('v8-tabs').innerHTML='';
+  v8CargarVista();
+}
+function v8LabelTab(t){return ({inicio:'Decisiones',tareas:'Tareas',inspector:'Inspector',cortes:'Corte',misiones:'Misiones',cierreInspector:'Cierre jornada',pendientes:'Tareas y gestión',reporteJornada:'Reportar jornada'})[t]||t}
+
+async function v8CargarVista(){
+ const b=document.getElementById('v8-role-body'); if(!b)return;
+ b.innerHTML='<div class="v8-empty">Cargando…</div>';
+ try{
+  if(V8.rol==='supervisor'){
+    if(V8.tab==='inicio'){const d=await v8ApiGet('supervisorV923',{}); b.innerHTML=v926SupervisorDecisiones(d);}
+    else if(V8.tab==='tareas'){const d=await v8ApiGet('tareas',{}); b.innerHTML=v926SupervisorTareas(d);}
+    else if(V8.tab==='inspector'){const d=await v8ApiGet('supervisorV923',{}); b.innerHTML=v926SupervisorInspector(d);}
+    else if(V8.tab==='cortes'){const d=await v8ApiGet('cortesPendientes',{}); b.innerHTML=v926SupervisorCortes(d);}
+  }else if(V8.rol==='inspector'){
+    if(V8.tab==='misiones'){const d=await v8ApiGet('inspectorV923',{inspector:V8.nombre}); b.innerHTML=v926InspectorMisiones(d);}
+    else b.innerHTML=v926PendienteBackend('Cierre / verificación de jornada','Se habilitará cuando el Motor acepte ID_TAREA + ID_JORNADA y conserve ML, m³, horas y novedad como evidencia independiente del Inspector.');
+  }else if(V8.rol==='cliente'){
+    if(V8.tab==='pendientes'){const ct=v8DetectarContratista(); const d=await v8ApiGet('contratistaV923',{contratista:ct}); b.innerHTML=v926ContratistaPendientes(d,ct);}
+    else b.innerHTML=v926PendienteBackend('Reporte de jornada','Se habilitará cuando el Motor reciba el reporte del Contratista ligado a ID_TAREA + ID_JORNADA sin sobrescribir la evidencia del Operador.');
+  }
+ }catch(e){b.innerHTML='<div class="card"><div class="v8-empty">No fue posible consultar el Motor.</div></div>'}
+}
+function v926PendienteBackend(t,m){return `<div class="card"><div class="section-label">${v8Esc(t)}</div><div class="hint">${v8Esc(m)}</div></div>`}
+function v926SupervisorDecisiones(d){const xs=d.bandeja||[],r=d.resumen||{};let h=`<div class="v8-kpi-grid"><div class="v8-kpi"><div class="n">${r.requiereDecision||0}</div><div class="t">Requieren decisión</div></div><div class="v8-kpi"><div class="n">${r.enGestion||0}</div><div class="t">En gestión</div></div></div>`; if(!xs.length)return h+'<div class="card"><div class="v8-empty">Nada reclama intervención.</div></div>'; return h+xs.map(x=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(x.ASUNTO||x.TIPO)}</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} · ${v8Esc(x.PLACA||'')} · ${v8Esc(x.CONTEXTO||'')}</div></div>`).join('')}
+function v926SupervisorTareas(d){const xs=d.tareas||[];let h='<div class="card"><div class="section-label">Programación</div><div class="hint">La autoridad de programación pertenece al Supervisor. La creación se habilitará al consolidar el contrato único de crearTarea para no perder META_ML/META_JORNADAS.</div></div>';return h+(xs.length?xs.map(t=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(t.NOMBRE||t.ID_TAREA)}</div><div class="v8-item-meta">${v8Esc(t.CONTRATISTA||'')} · ${v8Esc(t.BARRIO||'')} · Meta ${t.META_ML||0} ML · ${v8Esc(t.ESTADO||'')}</div></div>`).join(''):'<div class="card"><div class="v8-empty">Sin tareas.</div></div>')}
+function v926SupervisorInspector(d){const xs=(d.bandeja||[]).filter(x=>x.TIPO==='NECESIDAD_VERIFICACION');return xs.length?xs.map(x=>`<div class="v8-item"><div class="v8-item-title">Necesita verificación</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} · ${v8Esc(x.PLACA||'')} · ${v8Esc(x.CONTEXTO||'')}</div><div class="hint">El Supervisor conserva la autoridad de asignar la Misión.</div></div>`).join(''):'<div class="card"><div class="v8-empty">Sin necesidades de verificación pendientes.</div></div>'}
+function v926SupervisorCortes(d){const xs=d.cortes||[];return xs.length?xs.map(x=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(x.nombre||x.idTarea||'Tarea')}</div><div class="v8-item-meta">${v8Esc(x.contratista||'')} · ${v8Esc(x.barrio||'')}</div></div>`).join(''):'<div class="card"><div class="v8-empty">Sin cortes pendientes.</div></div>'}
+function v926InspectorMisiones(d){const xs=d.misiones||[];return xs.length?xs.map(x=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(x.MOTIVO||x.TIPO_MISION||'Misión')}</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} · ${v8Esc(x.PLACA||'')} · ${v8Esc(x.PRIORIDAD||'')}</div><div class="context-strip">${v8Esc(x.CONTEXTO_MISION||'')}</div></div>`).join(''):'<div class="card"><div class="v8-empty">Sin misiones pendientes.</div></div>'}
+function v926ContratistaPendientes(d,ct){const xs=d.pendientes||[];let h=`<div class="card"><div class="section-label">${v8Esc(ct||'Contratista')}</div><div class="hint">Aquí solo aparecen obligaciones que requieren actuación. Responder no equivale a resolver.</div></div>`;return h+(xs.length?xs.map(x=>`<div class="v8-item"><div class="v8-item-title">${v8Esc(x.ASUNTO||x.TIPO)}</div><div class="v8-item-meta">${v8Esc(x.ID_TAREA||'')} · ${v8Esc(x.PLACA||'')} · Tramo ${v8Esc(x.TRAMO||'')}</div><div class="context-strip">${v8Esc(x.CONTEXTO||'')}</div></div>`).join(''):'<div class="card"><div class="v8-empty">Sin gestiones pendientes.</div></div>')}
+</script>
+<style>
+/* V9.32 · Contratista integrado */
+.v932-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 14px}
+.v932-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:12px;text-align:center}
+.v932-kpi b{display:block;font-size:22px;color:#111827}.v932-kpi span{font-size:11px;color:#6b7280}
+.v932-card{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:14px;margin:10px 0}
+.v932-title{font-weight:800;font-size:15px;color:#111827}.v932-meta{font-size:12px;color:#6b7280;line-height:1.5;margin-top:4px}
+.v932-tag{display:inline-block;font-size:10px;font-weight:800;padding:4px 8px;border-radius:999px;background:#f3f4f6;color:#374151;margin-bottom:6px}
+.v932-tag.bad{background:#fee2e2;color:#991b1b}.v932-tag.good{background:#dcfce7;color:#166534}
+.v932-action{width:100%;border:0;border-radius:11px;padding:11px 12px;margin-top:10px;font-weight:800;background:#111827;color:white}
+.v932-empty{background:#fff;border:1px dashed #d1d5db;border-radius:15px;padding:22px;text-align:center;color:#6b7280;margin-top:12px}
+.v932-modal{position:fixed;inset:0;background:rgba(15,23,42,.62);display:none;align-items:flex-end;z-index:9999}
+.v932-modal.on{display:flex}.v932-sheet{background:#fff;width:100%;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px}
+.v932-sheet h3{margin:0 0 4px}.v932-sheet label{display:block;font-size:12px;font-weight:700;margin:12px 0 5px}
+.v932-sheet input,.v932-sheet textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:10px;padding:11px;font:inherit}
+.v932-sheet textarea{min-height:76px}.v932-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.v932-cancel{width:100%;border:0;background:#f3f4f6;color:#374151;border-radius:11px;padding:11px;margin-top:8px;font-weight:700}
+@media(max-width:420px){.v932-kpis{grid-template-columns:1fr 1fr}.v932-kpi:last-child{grid-column:1/-1}}
+</style>
+<div class="v932-modal" id="v932-modal"><div class="v932-sheet" id="v932-sheet"></div></div>
+<script>
+/* V9.32 · BLOQUE CONTRATISTA INTEGRADO AL MULTIRROL
+   Motor requerido: 9.32-BLOQUE-CONTRATISTA */
+const V932_API='https://script.google.com/macros/s/AKfycbwDy1V9_-gn0p4fNwVFnQJKJgYewW5ZfjmkRJpV8ckUwXzXWExAIgbuw0x-dUXORV4T/exec';
+let V932_DATA=null;
+V8.token=V8.token||'';
+
+function v932Jsonp(action,params){
+  return new Promise((resolve,reject)=>{
+    const cb='v932cb_'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    const tm=setTimeout(()=>{try{delete window[cb];s.remove()}catch(e){} reject(new Error('Sin respuesta del Motor para '+action+' (15 segundos; posible respuesta JSON sin callback JSONP)'));},15000);
+    window[cb]=d=>{clearTimeout(tm);try{delete window[cb];s.remove()}catch(e){}; d&&d.ok?resolve(d):reject(new Error((d&&d.error)||'Respuesta no válida'));};
+    s.onerror=()=>{clearTimeout(tm);try{delete window[cb];s.remove()}catch(e){};reject(new Error('No fue posible conectar con el Motor'));};
+    s.src=V932_API+'?'+new URLSearchParams(Object.assign({action,callback:cb},params||{})).toString();
+    document.body.appendChild(s);
+  });
+}
+
+const v8EntrarBase=v8Entrar;
+v8Entrar=function(rol){
+  if(rol!=='cliente') return v8EntrarBase(rol);
+  const guardado=sessionStorage.getItem('mtto_v932_token')||'';
+  const token=prompt('Token de acceso del Contratista',guardado);
+  if(!token)return;
+  v932Jsonp('contratistaVista',{token:token.trim()}).then(d=>{
+    V932_DATA=d; V8.token=token.trim(); V8.rol='cliente'; V8.nombre=d.usuario.nombre||d.usuario.contratista||'Contratista'; V8.tab='tareasContratista';
+    sessionStorage.setItem('mtto_v932_token',V8.token);
+    localStorage.setItem('mtto_v8_nombre',V8.nombre);
+    v8RenderRol();
+  }).catch(e=>{toast('⛔ '+e.message);});
+};
+
+const v8CambiarRolBase=v8CambiarRol;
+v8CambiarRol=function(){V932_DATA=null;V8.token='';sessionStorage.removeItem('mtto_v932_token');v8CambiarRolBase();};
+
+const v8RenderRolBase=v8RenderRol;
+v8RenderRol=function(){
+  if(V8.rol!=='cliente')return v8RenderRolBase();
+  mostrarPantalla('screen-rol-v8');
+  document.getElementById('v8-user-name').textContent=V8.nombre;
+  document.getElementById('v8-role-name').textContent='Contratista';
+  document.getElementById('v8-role-header').innerHTML='<div class="card access-hero"><div class="brand-title" style="font-size:21px">Contratista</div></div>';
+  const tabs=['tareasContratista','gestionContratista','reporteJornada'];
+  if(!tabs.includes(V8.tab))V8.tab=tabs[0];
+  const labels={tareasContratista:'Tareas',gestionContratista:'Gestión',reporteJornada:'Reportar Jornada'};
+  document.getElementById('v8-tabs').innerHTML='';
+  v8CargarVista();
+};
+
+const v8CargarVistaBase=v8CargarVista;
+v8CargarVista=async function(){
+  if(V8.rol!=='cliente')return v8CargarVistaBase();
+  const b=document.getElementById('v8-role-body');b.innerHTML='<div class="v8-empty">Cargando…</div>';
+  try{
+    V932_DATA=await v932Jsonp('contratistaVista',{token:V8.token});
+    V8.nombre=V932_DATA.usuario.nombre||V932_DATA.usuario.contratista||V8.nombre;
+    document.getElementById('v8-user-name').textContent=V8.nombre;
+    if(V8.tab==='tareasContratista')b.innerHTML=v932VistaTareas(V932_DATA);
+    else if(V8.tab==='gestionContratista')b.innerHTML=v932VistaGestion(V932_DATA);
+    else b.innerHTML=v932VistaJornadas(V932_DATA);
+  }catch(e){b.innerHTML=`<div class="v932-empty">No fue posible consultar el Motor.<br><small>${v8Esc(e.message)}</small></div>`;}
+};
+
+function v932Kpis(d){const r=d.resumen||{};return `<div class="v932-kpis"><div class="v932-kpi"><b>${r.tareasActivas||0}</b><span>Tareas activas</span></div><div class="v932-kpi"><b>${r.gestionesCCTV||0}</b><span>Gestiones CCTV</span></div><div class="v932-kpi"><b>${r.jornadasPorReportar||0}</b><span>Jornadas por reforzar</span></div></div>`;}
+function v932VistaTareas(d){
+  let h=v932Kpis(d)+`<div class="card"><div class="section-label">${v8Esc(d.usuario.contratista)}</div><div class="hint">Órdenes asignadas a tu contrato. Selecciona una para ver jornadas y cortes.</div></div>`;
+  const xs=d.tareas||[];if(!xs.length)return h+'<div class="v932-empty">Sin tareas activas.</div>';
+  return h+xs.map(t=>`<div class="v932-card"><span class="v932-tag">${v8Esc(t.estado||'ACTIVA')}</span><div class="v932-title">${v8Esc(t.nombre||t.idTarea)}</div><div class="v932-meta">${v8Esc(t.barrio||'')} · Meta ${Number(t.metaMl||0).toLocaleString('es-CO')} ML<br>${v8Esc(t.objetivo||'')}${t.proximoCorte?'<br>Fecha de corte registrada: '+v8Esc(t.proximoCorte):''}</div><button class="v932-action" data-tarea-id="${v8Esc(t.idTarea||'')}" onclick="v932AbrirSeguimiento(this.dataset.tareaId)">Ver tablero de corte</button></div>`).join('');
+}
+async function v932AbrirSeguimiento(idTarea){
+ const sh=document.getElementById('v932-sheet');
+ sh.innerHTML='<h3>Tablero de corte</h3><div class="hint">Consultando motor…</div>';
+ document.getElementById('v932-modal').classList.add('on');
+ try{
+  const d=await v932Jsonp('falcSeguimientoTarea',{token:V8.token,idTarea});
+  if(!d||d.ok!==true)throw Error(d?.error||'Respuesta no válida');
+  const t=d.tarea||{}, j=d.jornadasVinculadas||[], c=d.cortes||[], x=d.candidatasSinVinculo||[];
+  const esc=v=>v8Esc(String(v==null?'':v));
+  const fmt=v=>v==null?'Sin dato':Number(v).toLocaleString('es-CO',{maximumFractionDigits:2});
+  const meta=Number(t.metaMl), real=Number(t.realMlRegistrado);
+  const valido=Number.isFinite(meta)&&meta>0&&Number.isFinite(real)&&real>=0&&t.realMlRegistrado!=null;
+  const pct=valido?100*real/meta:null;
+  const corte=t.proximoCorte||'';
+  const vencido=!!corte&&/^\d{4}-\d{2}-\d{2}$/.test(corte)&&corte<new Date().toLocaleDateString('en-CA',{timeZone:'America/Bogota'});
+  const ultimo=c[0];
+  const filas=j.map(z=>`<div class="v932-card"><strong>${esc(z.placa)} · ${esc(z.turno)}</strong><div class="v932-meta">${esc(z.fechaInicio)} · ${esc(z.barrio)}<br>ML computables: ${fmt(z.mlComputable)} · Confirmados: ${fmt(z.mlConfirmado)} · Por aclarar: ${fmt(z.mlPorAclarar)}<br>${esc(z.estado)}${z.pendiente?'<br>Pendiente: '+esc(z.pendiente):''}${z.siguienteAccion?'<br>Siguiente acción: '+esc(z.siguienteAccion):''}</div></div>`).join('');
+  const cortes=c.map(z=>`<div class="v932-card"><strong>Corte ${esc(z.numero||'')} · ${esc(z.fecha)}</strong><div class="v932-meta">${esc(z.estado||'Sin estado')} · ML: ${fmt(z.realMl)}<br>${z.problemas?'Problemas: '+esc(z.problemas)+'<br>':''}${z.necesitaContratista?'Requiere contratista: '+esc(z.necesitaContratista)+'<br>':''}${z.necesitaInterno?'Requiere gestión interna: '+esc(z.necesitaInterno)+'<br>':''}${z.decision?'Decisión: '+esc(z.decision):''}</div></div>`).join('');
+  const avance=valido?`<div style="height:9px;border-radius:8px;background:#e5e7eb;overflow:hidden;margin:12px 0"><div style="height:100%;width:${Math.min(100,Math.max(0,pct))}%;background:#334155"></div></div><strong>${fmt(pct)} %</strong> del objetivo registrado · Diferencia: ${fmt(Math.max(0,meta-real))} ML`:'Avance porcentual no disponible';
+  sh.innerHTML=`<h3>${esc(t.nombre||'Tarea')}</h3><div class="v932-meta">${esc(t.barrio)} · ${esc(t.contratista)} · ${esc(t.estado)}</div><div class="v932-card"><div class="section-label">Desempeño frente a la meta</div><strong>Meta: ${fmt(t.metaMl)} ML · Registrado en tarea: ${fmt(t.realMlRegistrado)} ML</strong>${avance}<div class="hint">Referencia de la hoja Tareas; no equivale por sí sola a un corte aprobado.</div></div><div class="v932-card"><div class="section-label">Situación del corte</div><strong>${corte?'Fecha programada: '+esc(corte):'Sin fecha programada'}</strong><div class="hint">${vencido?'La fecha programada ya pasó. Verificar cierre o reprogramación; no implica incumplimiento automático.':'El estado del corte se determina por los registros de Cortes.'}</div><div class="v932-meta">Cortes registrados: ${c.length}${ultimo?' · Último: '+esc(ultimo.fecha)+' ('+esc(ultimo.estado||'sin estado')+')':''}</div></div><div class="v932-card"><div class="section-label">Soporte y asuntos que pueden afectar el corte</div><div class="v932-meta">Jornadas vinculadas: ${j.length} registros · Candidatas sin acreditar: ${x.length}<br>Registros con ML por aclarar: ${j.filter(z=>Number(z.mlPorAclarar)>0).length}<br>Registros con pendiente operativo: ${j.filter(z=>!!z.pendiente).length}</div><div class="hint">Las coincidencias contextuales no suman producción ni se convierten automáticamente en gestiones.</div></div><h4>Historial de cortes</h4>${cortes||'<div class="hint">No hay cortes registrados para esta tarea. No se presume cierre ni incumplimiento.</div>'}<h4>Evidencia de jornadas vinculadas</h4>${filas||'<div class="hint">Sin jornadas vinculadas explícitamente.</div>'}<button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>`;
+ }catch(e){sh.innerHTML=`<h3>Tablero no disponible</h3><div class="hint">${v8Esc(e.message)}</div><button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>`;}
+}
+function v932VistaGestion(d){
+  let h=v932Kpis(d)+'<div class="card"><div class="section-label">Gestión</div><div class="hint">Aquí aparecen los NO APTO CCTV que requieren relimpieza. La reinspección queda a cargo de CCTV.</div></div>';
+  const xs=(d.gestion&&d.gestion.cctvPendientes)||[];if(!xs.length)return h+'<div class="v932-empty">✓ Sin gestiones CCTV pendientes.</div>';
+  return h+xs.map(x=>`<div class="v932-card"><span class="v932-tag bad">NO APTO CCTV</span><div class="v932-title">Tramo ${v8Esc(x.tramo||'')}</div><div class="v932-meta">${v8Esc(x.idTarea||'')} · ${v8Esc(x.barrio||'')}<br>${v8Esc(x.placa||'')} · ${Number(x.ml||0).toLocaleString('es-CO')} ML</div><button class="v932-action" onclick='v932AbrirRelimpieza(${JSON.stringify(JSON.stringify(x))})'>Reportar relimpieza</button></div>`).join('');
+}
+function v932HoraHumana(h){
+  h=String(h||'').trim();
+  if(!h)return '';
+  const p=h.split(':');
+  let n=Number(p[0]);
+  if(!Number.isFinite(n))return h;
+  const suf=n>=12?'p. m.':'a. m.';
+  const hh=n%12||12;
+  return hh+':'+String(p[1]||'00').padStart(2,'0')+' '+suf;
+}
+function v932EtiquetaJornada(j){
+  const hora=j.horaInicio||v932HoraHumana(j.horaInicio24||'');
+  return v8Esc(j.fecha||'')+(hora?' · '+v8Esc(hora):'');
+}
+function v932VistaJornadas(d){
+ setTimeout(fccCargarCatalogos,0);
+ const js=(d.jornadas||[]);
+ window.FCC_JORNADAS=js;
+ const pendientes=js.filter(j=>!j.reportadaContratista && (j.requiereRefuerzo!==false) && (j.estadoRefuerzo!=="COMPLETADO"));
+
+ const tarjetas=(arr)=>arr.map((j,i)=>{const idx=js.indexOf(j);return `<div class="v932-card"><div class="v932-title">${v8Esc(j.placa||'Sin placa')} · ${v8Esc(j.barrio||'Sin barrio')}</div><div class="v932-meta">${v932EtiquetaJornada(j)} · ${v8Esc(j.turno||'Turno sin definir')}<br>${v8Esc(j.idJornada||'')} · ${Number(j.mlTrazable||0).toLocaleString('es-CO')} ML del operador</div><button class="v932-action" onclick="v932AbrirReporte(JSON.stringify(window.FCC_JORNADAS[${idx}]))">Abrir y complementar</button></div>`;}).join('');
+ return v932Kpis(d)+`<div class="card"><h3>Jornadas por reforzar</h3><div class="hint">Solo jornadas cerradas y enviadas por el operador que requieren refuerzo. El motor debe determinar cuáles están pendientes.</div></div>`+
+ (pendientes.length?tarjetas(pendientes):'<div class="v932-empty">No hay jornadas pendientes en la bandeja.</div>')+
+
+ `<div class="card"><h3>Ingreso excepcional</h3><div class="hint">Primero consulta. Si la consulta no encuentra la jornada, se permite declarar el ingreso excepcional, que quedará sujeto a verificación posterior por los responsables. Los datos consultados se conservan bloqueados.</div>
+ <label>Fecha</label><input id="fcc-fecha" type="date" onchange="fccInvalidarConsulta()">
+ <label>Placa asociada</label><select id="fcc-placa" onchange="fccInvalidarConsulta()"><option value="">Selecciona placa</option></select>
+ <label>Jornada</label><select id="fcc-turno" onchange="fccInvalidarConsulta()"><option value="">Selecciona...</option><option value="DIURNO">Diurno</option><option value="NOCTURNO">Nocturno</option></select>
+ <label>Barrio del motor</label><select id="fcc-barrio" onchange="fccCambioBarrio();fccInvalidarConsulta()"><option value="">Selecciona barrio</option></select>
+ <div id="fcc-otro-wrap" style="display:none"><label>Otro barrio (especificar)</label><input id="fcc-otro-barrio" placeholder="Nombre del barrio" oninput="fccInvalidarConsulta()"></div>
+ <button class="btn" onclick="fccConsultar(this)">Verificar con el motor</button></div><div id="fcc-respuesta"></div>`;
+}
+window.FCC_CONSULTA_AUTORIZADA=null;
+function fccInvalidarConsulta(){window.FCC_CONSULTA_AUTORIZADA=null;const o=document.getElementById("fcc-respuesta");if(o)o.innerHTML="";}
+function fccCambioBarrio(){const x=document.getElementById('fcc-barrio');document.getElementById('fcc-otro-wrap').style.display=x.value==='__OTRO__'?'block':'none';}
+async function fccCargarCatalogos(){
+ const p=document.getElementById('fcc-placa'),b=document.getElementById('fcc-barrio');if(!p||!b)return;
+ const out=document.getElementById('fcc-respuesta');
+ p.innerHTML='<option value="">Cargando placas…</option>';b.innerHTML='<option value="">Cargando barrios…</option>';
+ try{
+  const r=await v932Jsonp('falcCatalogosContratista',{token:V8.token});
+  if(!r||r.ok!==true)throw Error(r?.error||'El motor no entregó los catálogos');
+  window.FCC_CATALOGO_OFICIAL=true;const placas=Array.isArray(r.placas)?r.placas:[],barrios=Array.isArray(r.barrios)?r.barrios:[];
+  if(!placas.length)throw Error('No hay placas autorizadas para este contratista');
+  p.innerHTML='<option value="">Selecciona placa</option>'+placas.map(x=>`<option value="${v8Esc(x)}">${v8Esc(x)}</option>`).join('');
+  b.innerHTML='<option value="">Selecciona barrio</option>'+barrios.map(x=>`<option value="${v8Esc(x)}">${v8Esc(x)}</option>`).join('')+'<option value="__OTRO__">＋ Escribir barrio nuevo</option>';
+  if(out)out.textContent='Catálogos cargados desde el motor.';
+ }catch(e){
+  window.FCC_CATALOGO_OFICIAL=false;const js=Array.isArray(window.FCC_JORNADAS)?window.FCC_JORNADAS:[];
+  const placas=[...new Set(js.map(j=>String(j.placa||'').trim()).filter(Boolean))].sort();
+  const barrios=[...new Set(js.map(j=>String(j.barrio||'').trim()).filter(Boolean))].sort();
+  p.innerHTML='<option value="">Selecciona placa</option>'+placas.map(x=>`<option value="${v8Esc(x)}">${v8Esc(x)}</option>`).join('');
+  b.innerHTML='<option value="">Selecciona barrio</option>'+barrios.map(x=>`<option value="${v8Esc(x)}">${v8Esc(x)}</option>`).join('')+'<option value="__OTRO__">＋ Escribir barrio nuevo</option>';
+  if(out){out.setAttribute('role','alert');out.style.cssText='margin-top:12px;padding:14px;border:2px solid #b91c1c;background:#fef2f2;color:#991b1b;border-radius:10px;font-weight:700';out.textContent='ATENCIÓN: el motor no entregó el catálogo oficial ('+e.message+'). '+(placas.length&&barrios.length?'Se muestran únicamente placas y barrios de jornadas ya cargadas para intentar consultar una jornada existente. NO autoriza crear un ingreso excepcional.':'No hay opciones verificadas disponibles. Es necesario habilitar el catálogo del motor antes de continuar.');}
+ }
+}
+
+async function fccConsultar(btn){
+ const fecha=document.getElementById('fcc-fecha').value,placa=document.getElementById('fcc-placa').value.trim(),jornada=document.getElementById('fcc-turno').value,barrio=(document.getElementById('fcc-barrio').value==='__OTRO__'?document.getElementById('fcc-otro-barrio').value:document.getElementById('fcc-barrio').value).trim();
+ if(!fecha||!placa||!jornada||!barrio){toast('Completa los cuatro filtros');return;}
+ const out=document.getElementById('fcc-respuesta');window.FCC_CONSULTA_AUTORIZADA=null;btn.disabled=true;out.removeAttribute('role');out.style.cssText='';out.textContent='Consultando al motor…';
+ try{
+  const r=await v932Jsonp('falcConsultarJornada',{token:V8.token,fecha,placa,jornada,barrio});
+  if(!r||r.ok!==true)throw Error(r?.error||'Respuesta no válida del motor');
+  if(r.estado==='SIN_REGISTROS'){
+   const aviso=document.getElementById('fcc-respuesta');
+   if(!window.FCC_CATALOGO_OFICIAL){aviso.textContent='REGISTRO BLOQUEADO: faltan placas autorizadas del motor.';aviso.setAttribute('role','alert');return;}
+   window.FCC_CONSULTA_AUTORIZADA={fecha,placa,jornada,barrio,autorizacion:r.autorizacion||''};
+   out.innerHTML='<div class="card"><h3>Sin jornada encontrada</h3><div class="hint">Puedes preparar el ingreso excepcional desde cero. El motor deberá registrar y alertar para revisión humana.</div><button class="btn secondary" onclick="fccAbrirExcepcional()">Ingresar jornada excepcional</button></div>';
+  }else if(r.estado==='CON_REGISTROS'&&Array.isArray(r.jornadas)&&r.jornadas.length){
+   window.FCC_JORNADAS=r.jornadas;
+   out.innerHTML=r.jornadas.map((j,i)=>`<div class="v932-card"><div class="v932-title">${v8Esc(j.placa||placa)} · ${v8Esc(j.barrio||barrio)}</div><div class="v932-meta">${v8Esc(j.fecha||fecha)} · ${v8Esc(j.turno||jornada)} · ${v8Esc(j.idJornada||'')}</div><button class="v932-action" onclick="v932AbrirReporte(JSON.stringify(window.FCC_JORNADAS[${i}]))">Revisar y complementar</button></div>`).join('');
+  }else if(r.estado==='SIN_REGISTROS'){
+   const aviso=document.getElementById('fcc-respuesta');
+   if(!window.FCC_CATALOGO_OFICIAL){aviso.textContent='REGISTRO BLOQUEADO: faltan placas autorizadas del motor.';aviso.setAttribute('role','alert');return;}out.textContent='El motor no encontró la jornada, pero todavía no autorizó el ingreso excepcional. No se habilita el formulario.';}else out.textContent='El motor devolvió un estado no concluyente. No se habilita ingreso excepcional.';
+ }catch(e){out.setAttribute('role','alert');out.style.cssText='margin-top:12px;padding:14px;border:2px solid #b91c1c;background:#fef2f2;color:#991b1b;border-radius:10px;font-weight:700';out.textContent='CONSULTA NO COMPLETADA: '+e.message+'. No se habilita ingreso excepcional. Si indica «Sin respuesta del Motor», comprobar formato JSONP de salida_(r,e) y que el despliegue corresponda al código vigente.';}
+ finally{btn.disabled=false;}
+}
+/* V12: ingreso excepcional documental, revisión estrictamente local. */
+let fccTramosExV9=[];
+let fccExDatos={};
+function fccAbrirExcepcional(){
+ const q=window.FCC_CONSULTA_AUTORIZADA;
+ if(!q){toast('Primero consulta fecha, placa, turno y barrio');return;}
+ window.FCC_FILTROS={...q};
+ fccExDatos={operador:'',horaInicio:'',horaFin:'',agua:'',novedad:'',diametro:'',material:'',confirmacion:false};
+ fccTramosExV9=[{codigo:'',mhArriba:'',mhAbajo:'',longitud:'',observacion:''}];
+ document.getElementById('v932-modal').classList.add('on');fccPintarExV9();
+}
+function fccExEsc(x){return v8Esc(String(x??''));}
+function fccPintarExV9(){
+ const sh=document.getElementById('v932-sheet'),e=fccExEsc,q=window.FCC_FILTROS||{},d=fccExDatos;
+ sh.innerHTML=`<h3>Ingreso excepcional · FALC-XX</h3>
+ <div class="v932-card"><strong>Identidad consultada al motor (bloqueada)</strong><div class="v932-meta">Fecha: ${e(q.fecha)} · Placa: ${e(q.placa)} · Jornada: ${e(q.jornada)} · Barrio: ${e(q.barrio)}</div></div>
+ <div class="hint">Declaración excepcional sujeta a verificación humana. No sustituye una jornada existente. El envío será recibido por el motor y quedará pendiente de verificación. No se considera aprobado.</div>
+ <div class="v932-card"><strong>Datos documentales</strong>
+ <label>Nombre del operador *</label><input data-fcc-ex="operador" value="${e(d.operador)}" autocomplete="off">
+ <div class="v932-row"><div><label>Hora de inicio *</label><input type="time" data-fcc-ex="horaInicio" value="${e(d.horaInicio)}"></div><div><label>Hora final *</label><input type="time" data-fcc-ex="horaFin" value="${e(d.horaFin)}"></div></div>
+ <label>Agua utilizada (m³) *</label><input type="number" min="0" step="0.01" data-fcc-ex="agua" value="${e(d.agua)}">
+ <label>Novedad / observación general</label><textarea data-fcc-ex="novedad">${e(d.novedad)}</textarea></div>
+ <div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro *</label><input data-fcc-ex="diametro" value="${e(d.diametro)}"></div><div><label>Material *</label><input data-fcc-ex="material" value="${e(d.material)}"></div></div></div>
+ ${fccTramosExV9.map((t,i)=>`<div class="v932-card"><strong>Tramo adicional ${i+1} · APTO CCTV: SÍ</strong><div class="v932-row"><div><label>Código del tramo *</label><input data-fcc-i="${i}" data-fcc-key="codigo" value="${e(t.codigo)}"></div><div><label>ML limpiados *</label><input type="number" min="0.01" step="0.01" data-fcc-i="${i}" data-fcc-key="longitud" value="${e(t.longitud)}"></div></div><div class="v932-row"><div><label>MH arriba *</label><input data-fcc-i="${i}" data-fcc-key="mhArriba" value="${e(t.mhArriba)}"></div><div><label>MH abajo *</label><input data-fcc-i="${i}" data-fcc-key="mhAbajo" value="${e(t.mhAbajo)}"></div></div><label>Observación del tramo</label><textarea data-fcc-i="${i}" data-fcc-key="observacion">${e(t.observacion)}</textarea><button type="button" class="v932-cancel" onclick="fccQuitarExV9(${i})">Quitar tramo</button></div>`).join('')}
+ <button type="button" class="v932-action" onclick="fccAgregarExV9()">+ Agregar otro tramo</button>
+ <div class="v932-card"><strong>Visto bueno</strong><div class="hint">Pendiente. Exclusivo del responsable autorizado; no lo diligencia el contratista.</div></div>
+ <label style="display:flex;gap:9px;align-items:flex-start"><input type="checkbox" id="fcc-ex-confirmar" ${d.confirmacion?'checked':''} style="width:auto;margin-top:3px">Confirmo que terminé de ingresar los tramos y que la información corresponde a la intervención declarada.</label>
+ <button type="button" class="v932-action" onclick="fccEnviarExV15(this)">Registrar ingreso excepcional</button>
+ <div id="fcc-ex-estado" role="alert" aria-live="assertive" class="hint">No se ha enviado la declaración.</div>
+ <button type="button" class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>`;
+ sh.querySelectorAll('[data-fcc-i]').forEach(el=>el.addEventListener('input',()=>{fccTramosExV9[Number(el.dataset.fccI)][el.dataset.fccKey]=el.value;}));
+ sh.querySelectorAll('[data-fcc-ex]').forEach(el=>el.addEventListener('input',()=>{fccExDatos[el.dataset.fccEx]=el.value;}));
+ sh.querySelector('#fcc-ex-confirmar').addEventListener('change',ev=>fccExDatos.confirmacion=ev.target.checked);
+}
+function fccAgregarExV9(){fccTramosExV9.push({codigo:'',mhArriba:'',mhAbajo:'',longitud:'',observacion:''});fccPintarExV9();}
+function fccQuitarExV9(i){fccTramosExV9.splice(i,1);fccPintarExV9();}
+function fccRevisarExV9(){
+ const o=document.getElementById('fcc-ex-estado');if(!o)return;
+ const fail=m=>{o.textContent='⛔ ACCIÓN CORRECTIVA OBLIGATORIA: '+m;o.style.cssText='padding:14px;border:2px solid #dc2626;border-radius:9px;background:#fff1f2;color:#991b1b;font-weight:700';return false;};
+ const d=fccExDatos;
+ if(!d.operador.trim())return fail('Identifica al operador.');
+ if(!d.horaInicio||!d.horaFin)return fail('Completa hora de inicio y hora final; no se asignan automáticamente.');
+ if(d.agua===''||!Number.isFinite(Number(d.agua))||Number(d.agua)<0)return fail('Indica el agua utilizada (m³), incluso si fue cero.');
+ if(!d.diametro.trim()||!d.material.trim())return fail('Completa diámetro y material.');
+ if(!fccTramosExV9.length)return fail('Agrega al menos un tramo.');
+ const seen=new Set();
+ for(const t of fccTramosExV9){const c=String(t.codigo||'').trim().toUpperCase().replace(/\s+/g,' ');
+ if(!c||!String(t.mhArriba||'').trim()||!String(t.mhAbajo||'').trim()||!Number.isFinite(Number(t.longitud))||Number(t.longitud)<=0)return fail('Completa código, MH arriba, MH abajo y ML positivos en cada tramo.');
+ if(seen.has(c))return fail('El tramo '+c+' está duplicado. Corrige o elimina el registro repetido.');seen.add(c);
+ }
+ if(!d.confirmacion)return fail('Marca la confirmación de finalización de los tramos.');
+ o.style.cssText='padding:12px;border:1px solid #a3a3a3;border-radius:8px';
+ o.textContent='Validación local correcta. Listo para solicitar registro al motor.';
+ return true;
+}
+
+
+async function fccEnviarExV15(btn){
+ if(fccRevisarExV9()!==true)return;
+ const o=document.getElementById('fcc-ex-estado');
+ const q=window.FCC_FILTROS||{},d=fccExDatos;
+ const payload={identidad:{fecha:q.fecha,placa:q.placa,jornada:q.jornada,barrio:q.barrio,barrioNuevo:document.getElementById('fcc-barrio')?.value==='__OTRO__'},
+ operador:d.operador.trim(),horaInicio:d.horaInicio,horaFin:d.horaFin,aguaM3:Number(d.agua),
+ diametro:d.diametro.trim(),material:d.material.trim(),novedad:d.novedad.trim(),
+ tramos:fccTramosExV9.map(t=>({codigo:t.codigo.trim(),mhArriba:t.mhArriba.trim(),mhAbajo:t.mhAbajo.trim(),ml:Number(t.longitud),aptoCCTV:'SI',observacion:t.observacion.trim()})),
+ confirmacion:true,origen:'INGRESO_EXCEPCIONAL'};
+ btn.disabled=true;o.textContent='Enviando declaración al motor…';
+ try{
+  const r=await v932Jsonp('falcIngresoExcepcional',{token:V8.token,payload:JSON.stringify(payload),actionId:'FEX-'+Date.now()});
+  if(!r||r.ok!==true||!r.idRegistro||r.alertaGenerada!==true)throw Error(r?.error||'El motor no confirmó registro y alerta. Verificar antes de reintentar.');
+  o.style.cssText='padding:14px;border:1px solid #64748b;border-radius:9px';
+  o.textContent='DECLARACIÓN REGISTRADA · Referencia: '+r.idRegistro+' · Alerta de verificación generada. Pendiente de revisión humana.';
+  btn.textContent='Registrado';btn.disabled=true;
+  falcImprimirV16(payload,r.idRegistro,'INGRESO EXCEPCIONAL');
+ }catch(e){o.style.cssText='padding:14px;border:2px solid #b91c1c;border-radius:9px;color:#991b1b';o.textContent='SIN CONFIRMACIÓN: '+e.message;btn.disabled=false;}
+}
+
+
+function falcImprimirV16(datos,referencia,tipo){
+ // V16.3: cabecera y distribución documental armonizadas con el PDF del operador.
+ // No altera la persistencia ni las alertas: se ejecuta después de la confirmación del motor.
+ const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const id=datos.identidad||{}, tr=Array.isArray(datos.tramos)?datos.tramos:[];
+ const fecha=String(id.fecha||'');
+ const filas=tr.map((t,i)=>`<tr><td>${esc(datos.horaInicio||'')}</td><td>${esc(datos.horaFin||'')}</td><td>${esc(t.codigo||t.tramo||'')}</td><td>${esc(t.mhArriba||'')}</td><td>${esc(t.mhAbajo||'')}</td><td>${esc(t.diametro||datos.diametro||'')}</td><td>${esc(t.material||datos.material||'')}</td><td>${esc(t.ml||'')}</td><td>${esc(t.aptoCCTV||t.apto||'')}</td><td>${esc(t.observacion||'')}</td></tr>`).join('');
+ // Conservar las filas preimpresas, aun cuando no se registren tramos.
+ // La nota separadora identifica el final de los registros sin ocupar una fila de datos.
+ const filasLibres=Math.max(0,8-tr.length);
+ const blancos=Array.from({length:filasLibres},()=>'<tr class="fila-libre">'+Array.from({length:10},()=>'<td>&nbsp;</td>').join('')+'</tr>').join('');
+ const tabla=filas+'<tr class="fin-registros"><td colspan="10">— FIN DE REGISTROS DE JORNADA —</td></tr>'+blancos;
+ const pagina=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>FALC-XX · ${esc(referencia)}</title><style>
+ @page{size:A4 landscape;margin:9mm}*{box-sizing:border-box}body{font:9px Arial,Helvetica,sans-serif;color:#232b31;margin:0;background:white}
+ .documento{width:100%;margin:0 auto}.cabecera{display:grid;grid-template-columns:16% 68% 16%;height:18mm;border:1px solid #6e7a81;align-items:stretch}
+ .logo{border-right:1px solid #6e7a81;display:flex;align-items:center;justify-content:center;padding:1mm}.logo img{max-width:95%;max-height:16mm;width:auto;height:auto;object-fit:contain}
+ .titulo{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;font-size:12px;font-weight:700}
+ .control{border-left:1px solid #6e7a81;display:flex;flex-direction:column;justify-content:space-evenly;padding:1mm;font-size:8px}
+ .campos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:3mm}.campos.segunda{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:0}
+ .campo{height:12mm;border:1px solid #6e7a81;border-right:0;padding:1.5mm 2mm;overflow:hidden}.campo:last-child{border-right:1px solid #6e7a81}
+ .campo b{display:block;font-size:8px}.campo span{display:block;font-size:11px;margin-top:1.3mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.campo.destacado span{font-weight:700}
+ .seccion{display:flex;justify-content:space-between;margin:5mm 0 1.2mm;font-size:10px;font-weight:700}
+ table{width:100%;border-collapse:collapse;table-layout:fixed}thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
+ th,td{border:1px solid #6e7a81;padding:2mm 1mm;text-align:left;overflow-wrap:anywhere;vertical-align:top}
+ th{background:#f5f7f8;font-size:7.5px;height:9mm}td{font-size:8px;height:9mm}.fin-registros td{height:6mm;text-align:center;font-size:7px;font-weight:bold;letter-spacing:.05em;background:#f5f7f8}.fila-libre td{height:9mm}
+ .novedades{margin-top:5mm;border:1px solid #6e7a81;min-height:19mm;padding:2mm;white-space:pre-wrap}.novedades b{display:block;margin-bottom:2mm}
+ .resumen{display:grid;grid-template-columns:repeat(4,1fr);margin-top:3mm}.resumen div{border:1px solid #6e7a81;padding:2mm;min-height:12mm}.resumen div+div{border-left:0}
+ .pie{margin-top:3mm;border-top:1px solid #6e7a81;padding-top:2mm;font-size:8px;font-weight:bold}.aviso{margin-top:2mm;font-size:8px;color:#59656c}
+ @media screen{body{background:#e9edef;padding:20px}.documento{background:white;padding:9mm;max-width:297mm;min-height:210mm;box-shadow:0 2px 18px #0002}.herramientas{max-width:297mm;margin:0 auto 12px;display:flex;gap:10px}.herramientas button{padding:10px 16px;cursor:pointer}}
+ @media print{.herramientas{display:none!important}.documento{padding:0;min-height:0}}
+ </style></head><body><div class="herramientas"><button onclick="window.print()">Imprimir / Guardar PDF</button><button onclick="window.close()">Cerrar vista</button></div><main class="documento">
+ <header class="cabecera"><div class="logo"><img src="data:image/png;base64,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" alt="Logotipo institucional"></div><div class="titulo"><span>CONTROL DIARIO MANTENIMIENTO PREVENTIVO</span><span>LIMPIEZA CON EQUIPO PRESIÓN SUCCIÓN</span></div><div class="control"><b>Código: FALC-XX</b><span>Versión: 01</span><span>Fecha: ${esc(fecha)}</span></div></header>
+ <div class="campos"><div class="campo"><b>FECHA</b><span>${esc(fecha)}</span></div><div class="campo"><b>PLACA</b><span>${esc(id.placa)}</span></div><div class="campo"><b>JORNADA</b><span>${esc(id.jornada)}</span></div><div class="campo destacado"><b>BARRIO</b><span>${esc(id.barrio)}</span></div></div>
+ <div class="campos segunda"><div class="campo"><b>CONTRATISTA</b><span>${esc(datos.contratista||'')}</span></div><div class="campo"><b>EQUIPO PRESIÓN / SUCCIÓN</b><span>${esc(id.placa)}</span></div><div class="campo"><b>OPERADOR / TAREA</b><span>${esc(datos.operador||'')}</span></div></div>
+ <div class="seccion"><span>REGISTRO CRONOLÓGICO DE TRAMOS</span><span>FALC-XX</span></div>
+ <table><colgroup>${[22,22,33,24,24,22,22,27,23,60].map(v=>'<col style="width:'+(100*v/279).toFixed(3)+'%">').join('')}</colgroup><thead><tr>${['H. INICIO','H. FINAL','TRAMO','MH ARRIBA','MH ABAJO','DIÁMETRO','MATERIAL','ML LIMPIADOS','APTO CCTV','OBSERVACIÓN'].map(h=>'<th>'+h+'</th>').join('')}</tr></thead><tbody>${tabla}</tbody></table>
+ <section class="novedades"><b>NOVEDADES / CONTINUIDAD OPERATIVA</b>${esc(datos.novedad||'Sin novedades declaradas')}</section>
+ <div class="resumen"><div><b>TRAMOS DECLARADOS</b><p>${tr.length}</p></div><div><b>AGUA (m³)</b><p>${esc(datos.aguaM3||'')}</p></div><div><b>RESPONSABLE</b><p>${esc(datos.operador||'')}</p></div><div><b>VERIFICACIÓN</b><p>PENDIENTE</p></div></div>
+ <footer class="pie">ORIGEN: ${esc(tipo)} · REFERENCIA: ${esc(referencia)} · DECLARACIÓN RECIBIDA · PENDIENTE DE VERIFICACIÓN</footer>
+ <div class="aviso">Documento generado desde una declaración del contratista; no constituye validación de ejecución.</div>
+ </main></body></html>`;
+ const w=window.open('','_blank');
+ if(!w){alert('Registro confirmado. Habilita ventanas emergentes para visualizar el FALC-XX.');return;}
+ w.document.open();w.document.write(pagina);w.document.close();w.focus();
+}
+
+function v932CerrarModal(){document.getElementById('v932-modal').classList.remove('on');document.getElementById('v932-sheet').innerHTML='';}
+function v932AbrirRelimpieza(raw){const x=JSON.parse(raw);const sh=document.getElementById('v932-sheet');sh.innerHTML=`<h3>Reportar relimpieza</h3><div class="v932-meta">Tramo ${v8Esc(x.tramo||'')} · ${v8Esc(x.placa||'')}</div><label>Tramo(s) realmente relimpiados</label><input id="v932-re-tramos" value="${v8Esc(x.tramo||'')}"><label>Observación</label><textarea id="v932-re-obs" placeholder="Opcional"></textarea><button class="v932-action" onclick="v932EnviarRelimpieza('${v8Esc(x.idCCTV||'')}',this)">Confirmar relimpieza</button><button class="v932-cancel" onclick="v932CerrarModal()">Cancelar</button>`;document.getElementById('v932-modal').classList.add('on');}
+async function v932EnviarRelimpieza(idCCTV,btn){const tr=document.getElementById('v932-re-tramos').value.trim();if(!tr){toast('Indica el tramo relimpiado');return;}btn.disabled=true;try{await v932Jsonp('cctvRelimpieza',{token:V8.token,idCCTV,tramos:tr,observacion:document.getElementById('v932-re-obs').value.trim(),actionId:'REL-'+Date.now()});toast('✅ Relimpieza registrada');v932CerrarModal();v8CargarVista();}catch(e){toast('⛔ '+e.message);btn.disabled=false;}}
+function v932AbrirReporte(raw){const j=JSON.parse(raw);const sh=document.getElementById('v932-sheet');sh.innerHTML=`<h3>Reportar Jornada</h3><div class="v932-meta"><strong>${v932EtiquetaJornada(j)}</strong><br>${v8Esc(j.placa||'')} · ${v8Esc(j.barrio||'')}${j.turno?'<br>Turno: '+v8Esc(j.turno):''}<br>${v8Esc(j.idTarea||'')}<br><br>Referencia Operador: ${Number(j.mlTrazable||0).toLocaleString('es-CO')} ML · ${Number(j.m3Trazable||0).toLocaleString('es-CO')} m³</div><div class="v932-row"><div><label>Hora inicio declarada</label><input id="v932-r-ini" type="time"></div><div><label>Hora fin declarada</label><input id="v932-r-fin" type="time"></div></div><div class="v932-row"><div><label>ML declarados</label><input id="v932-r-ml" type="number" min="0" step="0.01" inputmode="decimal"></div><div><label>m³ declarados</label><input id="v932-r-m3" type="number" min="0" step="0.01" inputmode="decimal"></div></div>${falcCCRevisionPrecargada(j)}<label>Novedad / observación</label><textarea id="v932-r-obs" placeholder="Opcional"></textarea><button class="v932-action" onclick="v932EnviarReporte('${v8Esc(j.idJornada||'')}','${v8Esc(j.fecha||'')}',this)">Registrar declaración</button><button class="v932-cancel" onclick="v932CerrarModal()">Cancelar</button>`;document.getElementById('v932-modal').classList.add('on');}
+function v932AbrirDescartar(raw){const j=JSON.parse(raw);const sh=document.getElementById('v932-sheet');sh.innerHTML=`<h3>Descartar Jornada</h3><div class="v932-meta"><strong>${v932EtiquetaJornada(j)}</strong><br>${v8Esc(j.placa||'')} · ${v8Esc(j.barrio||'')}<br>${v8Esc(j.idTarea||'')}</div><div class="hint" style="margin:12px 0">Esta acción no borra la evidencia del Operador. Registra que el Contratista no reconoce esta Jornada como válida.</div><label>Motivo</label><select id="v932-d-motivo"><option value="">Selecciona un motivo</option><option>Jornada no realizada</option><option>Inicio accidental</option><option>Registro duplicado</option><option>Equipo no operó en ese turno</option><option>Otro</option></select><label>Observación</label><textarea id="v932-d-obs" placeholder="Explica brevemente qué ocurrió"></textarea><button class="v932-action" onclick="v932EnviarDescartar('${v8Esc(j.idJornada||'')}','${v8Esc(j.fecha||'')}',this)">Confirmar descarte</button><button class="v932-cancel" onclick="v932CerrarModal()">Cancelar</button>`;document.getElementById('v932-modal').classList.add('on');}
+async function v932EnviarReporte(idJornada,fecha,btn){const ini=document.getElementById('v932-r-ini').value,fin=document.getElementById('v932-r-fin').value,ml=document.getElementById('v932-r-ml').value,m3=document.getElementById('v932-r-m3').value;if(!ini||ml===''){toast('Hora de inicio y ML son obligatorios');return;}btn.disabled=true;try{await v932Jsonp('contratistaReportarJornada',{token:V8.token,idJornada,fecha,horaInicio:ini,horaFin:fin,mlDeclarado:ml,m3Declarado:m3,novedad:document.getElementById('v932-r-obs').value.trim(),actionId:'DJC-'+Date.now()});toast('✅ Jornada reportada');v932CerrarModal();v8CargarVista();}catch(e){toast('⛔ '+e.message);btn.disabled=false;}}
+async function v932EnviarDescartar(idJornada,fecha,btn){const motivo=document.getElementById('v932-d-motivo').value.trim(),obs=document.getElementById('v932-d-obs').value.trim();if(!motivo){toast('Selecciona el motivo del descarte');return;}btn.disabled=true;try{await v932Jsonp('contratistaReportarJornada',{token:V8.token,idJornada,fecha,decision:'DESCARTAR',motivo,observacion:obs,actionId:'DJD-'+Date.now()});toast('✅ Descarte registrado');v932CerrarModal();v8CargarVista();}catch(e){toast('⛔ '+e.message);btn.disabled=false;}}
+</script>
+
+
+<script>
+/* V10 · ACCESO ÚNICO VALIDADO POR MOTOR */
+async function v10Ingresar(){
+  const usuario=(document.getElementById('v8-identidad').value||'').trim();
+  const token=(document.getElementById('v10-token').value||'').trim();
+  const err=document.getElementById('v10-login-error');
+  const btn=document.getElementById('v10-login-btn');
+  err.classList.remove('show'); err.textContent='';
+  if(!usuario||!token){err.textContent='Ingresa usuario/identificación y token.';err.classList.add('show');return;}
+  btn.disabled=true; btn.textContent='Validando…';
+  try{
+    const d=await v932Jsonp('autenticarUsuario',{usuario,token});
+    const rol=String(d.usuario.rol||'').toLowerCase();
+    if(!['supervisor','inspector','cliente'].includes(rol)) throw new Error('Rol no habilitado en esta aplicación');
+    V8.token=token; V8.rol=rol; V8.nombre=d.usuario.nombre||usuario;
+    sessionStorage.setItem('mtto_v10_token',token);
+    sessionStorage.setItem('mtto_v10_usuario',usuario);
+    if(rol==='cliente'){
+      V932_DATA=await v932Jsonp('contratistaVista',{token});
+      V8.tab='tareasContratista';
+      sessionStorage.setItem('mtto_v932_token',token);
+    } else {
+      V8.tab=rol==='supervisor'?'inicio':'observar';
+    }
+    v8RenderRol();
+  }catch(e){err.textContent=e.message||'No fue posible validar el acceso';err.classList.add('show');}
+  finally{btn.disabled=false;btn.textContent='Ingresar';}
+}
+
+const v8CambiarRolV10Base=v8CambiarRol;
+v8CambiarRol=function(){
+  V932_DATA=null; V8.token=''; V8.rol=null; V8.nombre='';
+  sessionStorage.removeItem('mtto_v10_token');
+  sessionStorage.removeItem('mtto_v10_usuario');
+  sessionStorage.removeItem('mtto_v932_token');
+  document.getElementById('v10-token').value='';
+  mostrarPantalla('screen-acceso-v8');
+};
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter' && document.getElementById('screen-acceso-v8').classList.contains('active')) v10Ingresar();
+});
+</script>
+
+
+<script>
+/* FALC-XX: revisión integrada. Datos solo del expediente recibido del motor. */
+function falcCCRevisionPrecargada(j){
+ const rows=Array.isArray(j.tramos)?j.tramos:Array.isArray(j.registros)?j.registros:[];
+ const groups=Array.isArray(j.gruposManuales)?j.gruposManuales:[];
+ let h='<div class="section-label">Evidencia del operador</div>';
+ if(!rows.length&&!groups.length)return h+'<div class="hint">El motor solo entregó el resumen de jornada. No hay tramos individuales ni grupos manuales precargados; no se deben reconstruir ni inventar. La complementación técnica quedará pendiente hasta que la API suministre esos registros.</div>';
+ const esc=x=>v8Esc(String(x==null?'':x));
+ rows.forEach((t,i)=>{
+  h+='<div class="v932-card"><div class="v932-title">Tramo '+esc(t.tramo||t.codigo||'—')+'</div><div class="v932-meta">'+esc(t.ml||t.mlLimpiados||0)+' ML · CCTV '+esc(t.aptoCCTV||t.apto||'—')+' · '+esc(t.observacion||'')+'</div>';
+  h+=falcCCTecnicos(i,t);h+='</div>';
+ });
+ groups.forEach((g,i)=>{
+  const cod=Array.isArray(g.codigos)?g.codigos:[];
+  h+='<div class="v932-card"><div class="v932-title">Declaración manual conjunta</div><div class="v932-meta">Códigos: '+esc(cod.join(' / '))+' · '+esc(g.mlConjuntos)+' ML conjuntos. Pendiente de desglose, sin verificación automática.</div>';
+  cod.forEach((c,k)=>h+=falcCCTecnicos('g'+i+'-'+k,{tramo:c}));h+='</div>';
+ });
+ return h+'<div class="hint">Los campos técnicos de esta vista son borrador local. No se envían con el reporte hasta disponer de una ruta autenticada que los reciba y preserve la declaración original.</div>';
+}
+function falcCCTecnicos(id,t){
+ const esc=x=>v8Esc(String(x==null?'':x));
+ return '<div class="v932-row"><div><label>MH arriba</label><input data-falc="'+esc(id)+'" data-campo="mhArriba" value="'+esc(t.mhArriba||'')+'"></div><div><label>MH abajo</label><input data-falc="'+esc(id)+'" data-campo="mhAbajo" value="'+esc(t.mhAbajo||'')+'"></div></div>'+['diametro','material','barrio'].map(c=>'<label>'+({diametro:'Diámetro',material:'Material',barrio:'Barrio'}[c])+'</label><input data-falc="'+esc(id)+'" data-campo="'+c+'" value="'+esc(t[c]||'')+'">').join('');
+}
+</script>
+
+<script>
+/* V4: carga bajo demanda de evidencia real del motor; no reconstruye tramos. */
+const falcAbrirReporteAnteriorV4=v932AbrirReporte;
+v932AbrirReporte=async function(raw){
+ let j;
+ try{j=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){toast('Jornada inválida');return;}
+ if(!j.idJornada){toast('La jornada no tiene identificador');return;}
+ const sh=document.getElementById('v932-sheet');
+ sh.innerHTML='<h3>Consultando evidencia del operador…</h3><div class="hint">Esperando los eventos reales del motor.</div>';
+ document.getElementById('v932-modal').classList.add('on');
+ try{
+  const r=await v932Jsonp('falcDetalleRefuerzo',{token:V8.token,idJornada:j.idJornada});
+  if(!r||r.ok!==true)throw Error(r&&r.error||'Respuesta inválida');
+  if(r.jornada&&String(r.jornada.idJornada)!==String(j.idJornada))throw Error('Identidad de jornada no coincide');
+  const combinado=Object.assign({},j,r.jornada||{},{eventosOperador:r.eventosOperador||[],tramos:r.tramos||[],gruposManuales:r.gruposManuales||[]});
+  falcAbrirReporteAnteriorV4(JSON.stringify(combinado));
+ }catch(e){
+  sh.innerHTML='<h3>No se puede abrir el refuerzo</h3><div class="hint">'+v8Esc(e.message||String(e))+'</div><button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>';
+ }
+};
+const falcRevisionOriginalV4=falcCCRevisionPrecargada;
+falcCCRevisionPrecargada=function(j){
+ const ev=Array.isArray(j.eventosOperador)?j.eventosOperador:[];
+ const tr=Array.isArray(j.tramos)?j.tramos:[];
+ const gr=Array.isArray(j.gruposManuales)?j.gruposManuales:[];
+ let h=falcRevisionOriginalV4(j);
+ if(!ev.length)return h;
+ const e=x=>v8Esc(String(x==null?'':x));
+ h+='<div class="section-label">Eventos originales del operador ('+ev.length+')</div>';
+ ev.forEach((x,i)=>{
+  h+='<div class="v932-card"><div class="v932-title">Evento '+(i+1)+' · '+e(x.tipo||'Sin tipo')+'</div><div class="v932-meta">'+e(x.fecha||'')+'</div>';
+  const datos=x.datos&&typeof x.datos==='object'?x.datos:{};
+  const keys=Object.keys(datos).filter(k=>!(/token|password|clave|secret/i).test(k));
+  h+=keys.length?'<div class="v932-meta">'+keys.map(k=>'<div><strong>'+e(k)+':</strong> '+e(typeof datos[k]==='object'?JSON.stringify(datos[k]):datos[k])+'</div>').join('')+'</div>':'<div class="hint">Sin atributos adicionales en este evento.</div>';
+  h+='</div>';
+ });
+ if(!tr.length&&!gr.length)h+='<div class="hint">Los eventos se muestran como evidencia original. No se convertirán automáticamente en tramos ni se habilitará el guardado de complementos técnicos hasta validar su estructura y receptor.</div>';
+ return h;
+};
+</script>
+<style>
+/* V5: contraste y navegación única del contratista */
+.v932-kpi.falc-active{border:2px solid #475569!important;background:#e2e8f0!important;color:#0f172a!important}
+.v932-kpi:focus-visible{outline:3px solid #a78bfa;outline-offset:2px}
+#v932-modal .v932-sheet{background:#fff!important;color:#172033!important}
+#v932-modal .v932-sheet h3,#v932-modal .v932-sheet h4,#v932-modal .v932-sheet strong,#v932-modal .v932-sheet .section-label{color:#152039!important}
+#v932-modal .v932-sheet .hint,#v932-modal .v932-sheet .v932-meta,#v932-modal .v932-sheet p,#v932-modal .v932-sheet label{color:#374151!important;opacity:1!important}
+#v932-modal .v932-sheet .v932-card{background:#f8fafc!important;border:1px solid #cbd5e1!important;color:#172033!important}
+#v932-modal .v932-sheet input,#v932-modal .v932-sheet select,#v932-modal .v932-sheet textarea{background:#fff!important;color:#172033!important;border:1px solid #64748b!important}
+.v932-kpi[role=button]{cursor:pointer;min-height:68px;transition:transform .1s,border-color .1s}
+.v932-kpi[role=button]:focus-visible{outline:3px solid #a78bfa;outline-offset:3px}
+.v932-kpi[role=button]:active{transform:scale(.98)}
+#v932-modal .v932-sheet .v932-action{color:#fff!important;background:#172033!important}
+#v932-modal .v932-sheet .v932-cancel{color:#172033!important;background:#e2e8f0!important}
+</style>
+<script>
+/* V3: ajustes de interfaz sin alterar las rutas de escritura del motor */
+v932Kpis=function(d){const r=d.resumen||{};const x=[['tareasContratista',r.tareasActivas||0,'Tareas activas'],['gestionContratista',r.gestionesCCTV||0,'Gestiones CCTV'],['reporteJornada',r.jornadasPorReportar||0,'Jornadas por reforzar']];return '<div class="v932-kpis">'+x.map(([tab,n,t])=>'<button type="button" class="v932-kpi" style="font:inherit" onclick="falcIrPestanaV3(\''+tab+'\')"><b>'+n+'</b><span>'+t+'</span></button>').join('')+'</div>';};
+function falcIrPestanaV3(tab){v8Tab(tab);}
+const falcVistaJornadasAnteriorV3=v932VistaJornadas;
+v932VistaJornadas=function(d){let html=falcVistaJornadasAnteriorV3(d);html=html.replace('<div class="card"><h3>Ingreso excepcional</h3>','<div class="card"><button type="button" class="v932-action" aria-expanded="false" onclick="falcAlternarExcepcionalV3(this)">Ingreso excepcional de jornada</button><div class="falc-excepcional-v3" hidden><h3>Consulta previa al motor</h3>');html=html.replace('<div id="fcc-respuesta"></div>','<div id="fcc-respuesta"></div></div>');return html;};
+function falcAlternarExcepcionalV3(b){const el=b.nextElementSibling;el.hidden=!el.hidden;b.setAttribute('aria-expanded',String(!el.hidden));if(!el.hidden)fccCargarCatalogos();}
+/* Mostrar tramos consolidados por cierre. La evidencia original permanece intacta. */
+function falcTramosDeEventosV3(ev){
+ const m=new Map();
+ (ev||[]).forEach(e=>{const d=e.datos&&typeof e.datos==='object'?e.datos:e;const tipo=String(e.tipo||e.evento||'').toLowerCase();if(!/tramocierre|tramo_cierre/.test(tipo))return;const codigo=String(d.tramo||d.codigoTramo||d.codigo||'').trim();if(!codigo)return;const prev=m.get(codigo)||{};m.set(codigo,Object.assign({},prev,{tramo:codigo,ml:d.ml??d.mlLimpiados??prev.ml??null,aptoCCTV:d.aptoCCTV??d.apto??prev.aptoCCTV??'',observacion:d.observacion??d.observaciones??prev.observacion??'',barrio:d.barrio??prev.barrio??''}));});
+ return Array.from(m.values());
+}
+/* Sustituye el formulario general de declaración por lectura técnica del operador. */
+v932AbrirReporte=async function(raw){
+ let j;try{j=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){toast('Jornada inválida');return;}
+ const sh=document.getElementById('v932-sheet');document.getElementById('v932-modal').classList.add('on');
+ falcAdicionalBorradorV6=[]; window.falcCodigosOriginalesV8=[];
+ sh.innerHTML='<h3>Consultando tramos del operador…</h3>';
+ try{
+  const r=await v932Jsonp('falcDetalleRefuerzo',{token:V8.token,idJornada:j.idJornada});
+  if(!r||r.ok!==true)throw Error(r?.error||'Respuesta inválida');
+  if(r.jornada&&String(r.jornada.idJornada)!==String(j.idJornada))throw Error('La identidad no coincide');
+  const ev=r.eventosOperador||[];const tr=(Array.isArray(r.tramos)&&r.tramos.length?r.tramos:falcTramosDeEventosV3(ev));
+  window.falcCodigosOriginalesV8=tr.map(t=>String(t.tramo||t.codigo||t.codigoTramo||t.idTramo||'').trim().toUpperCase()).filter(Boolean);
+  const e=x=>v8Esc(String(x==null?'':x));
+  let html='<h3>Complemento técnico de jornada</h3><div class="v932-meta">'+e(j.placa)+' · '+e(j.barrio)+' · '+e(j.turno||'')+'</div>';
+  html+='<div class="hint">Registro original del operador: solo lectura. Los campos técnicos son una vista preliminar y no se guardan todavía.</div>';
+  html+='<div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro</label><input data-falc="conjunto" data-campo="diametro" disabled placeholder="Pendiente de guardado"></div><div><label>Material</label><input data-falc="conjunto" data-campo="material" disabled placeholder="Pendiente de guardado"></div></div><div class="v932-meta">Barrio: '+e(r.jornada?.barrio||j.barrio||'Sin dato del motor')+' (dato del sistema)</div></div>';
+  html+=tr.length?tr.map((t,i)=>'<div class="v932-card"><div class="v932-title">Tramo '+e(t.tramo||t.codigo||'—')+'</div><div class="v932-meta">Apto CCTV: '+e(t.aptoCCTV||t.apto||'Sin dato')+' · ML: '+e(t.ml??t.mlLimpiados??'Sin dato')+'<div>'+e(t.observacion||'')+'</div></div><div class="v932-row"><div><label>MH arriba</label><input data-falc="'+i+'" data-campo="mhArriba" value="'+e(t.mhArriba||'')+'" disabled></div><div><label>MH abajo</label><input data-falc="'+i+'" data-campo="mhAbajo" value="'+e(t.mhAbajo||'')+'" disabled></div></div></div>').join(''):'<div class="hint">No se recibieron cierres de tramo identificables. No se inventarán registros.</div>';
+
+  html+='<div class="v932-card"><button type="button" class="v932-action" onclick="falcMostrarAdicionalV6()">+ Solicitar ingreso de tramo adicional</button></div>';
+  html+='<div id="falc-adicional-v6" hidden></div>';
+  html+='<div class="hint">Guardado técnico pendiente de conectar al motor; los datos de esta vista no se envían todavía.</div><button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>';
+  sh.innerHTML=html;
+  // Índice basado en los tramos realmente mostrados, no solo en la forma del JSON.
+  window.falcCodigosOriginalesV8=Array.from(new Set([...window.falcCodigosOriginalesV8,...Array.from(sh.querySelectorAll('.v932-title')).map(n=>{const m=n.textContent.trim().match(/^Tramo\s+(.+)$/i);return m?m[1].trim().toUpperCase():'';}).filter(Boolean)]));
+  sh.querySelectorAll('[data-falc]').forEach(x=>{x.disabled=false;x.title='Borrador local; pendiente de integración con el motor';});
+ }catch(err){sh.innerHTML='<h3>Sin detalle disponible</h3><div class="hint">'+v8Esc(err.message||String(err))+'</div><button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>';}
+};
+
+/* V6: captura local separada de tramos adicionales. No envía ni inventa guardados. */
+let falcAdicionalBorradorV6=[];
+function falcMostrarAdicionalV6(){
+ const el=document.getElementById('falc-adicional-v6');if(!el)return;
+ el.hidden=false;if(!falcAdicionalBorradorV6.length)falcAdicionalBorradorV6=[{codigo:'',ml:'',mhArriba:'',mhAbajo:''}];falcPintarAdicionalV6();el.querySelector('input[data-key="codigo"]')?.focus();
+}
+function falcPintarAdicionalV6(){
+ const el=document.getElementById('falc-adicional-v6');if(!el)return;
+ const e=x=>v8Esc(String(x??''));
+ el.innerHTML='<div class="v932-card"><h4>Tramos adicionales</h4><div id="falc-filas-v6">'+falcAdicionalBorradorV6.map((t,i)=>'<div class="v932-card"><strong>Tramo adicional '+(i+1)+'</strong><div class="v932-row"><div><label>Código del tramo</label><input data-extra="'+i+'" data-key="codigo" value="'+e(t.codigo)+'"></div><div><label>Longitud del tramo</label><input type="number" min="0" step="0.01" data-extra="'+i+'" data-key="ml" value="'+e(t.ml)+'"></div></div><div class="v932-row"><div><label>MH arriba</label><input data-extra="'+i+'" data-key="mhArriba" value="'+e(t.mhArriba)+'"></div><div><label>MH abajo</label><input data-extra="'+i+'" data-key="mhAbajo" value="'+e(t.mhAbajo)+'"></div></div><button class="v932-cancel" type="button" onclick="falcEliminarAdicionalV6('+i+')">Quitar este tramo</button></div>').join('')+'</div><button type="button" class="v932-action" onclick="falcAgregarAdicionalV6()">+ Agregar otro tramo</button><button type="button" class="v932-action" onclick="falcRevisarAdicionalV6()">Revisar tramos ingresados</button><div id="falc-estado-v6" class="hint" aria-live="polite"></div></div>';
+ el.querySelectorAll('[data-extra]').forEach(input=>input.addEventListener('input',()=>{const i=Number(input.dataset.extra);falcAdicionalBorradorV6[i][input.dataset.key]=input.value;}));
+}
+function falcAgregarAdicionalV6(){falcAdicionalBorradorV6.push({codigo:'',ml:'',mhArriba:'',mhAbajo:''});falcPintarAdicionalV6();}
+function falcEliminarAdicionalV6(i){falcAdicionalBorradorV6.splice(i,1);falcPintarAdicionalV6();}
+function falcRevisarAdicionalV6(){
+ const out=document.getElementById('falc-estado-v6');if(!out)return;
+ const seen=new Set();let error='',conflict='';
+ const originals=new Set((window.falcCodigosOriginalesV8||[]).map(c=>String(c).trim().toUpperCase()));
+ if(!falcAdicionalBorradorV6.length)error='Agrega al menos un tramo.';
+ for(const t of falcAdicionalBorradorV6){
+  if(error)break;
+  const c=String(t.codigo||'').trim().toUpperCase();
+  if(!c||!String(t.mhArriba||'').trim()||!String(t.mhAbajo||'').trim()||t.ml===''||!Number.isFinite(Number(t.ml))||Number(t.ml)<0){error='Completa código, MH arriba, MH abajo y longitud válida en cada tramo.';break;}
+  if(seen.has(c)||originals.has(c)){conflict=c;error='ACCIÓN CORRECTIVA OBLIGATORIA: el tramo '+c+' ya está registrado '+(originals.has(c)?'en esta jornada.':'en este formulario.')+' Corrige el código o retira el registro repetido antes de continuar.';break;}
+  seen.add(c);
+ }
+ out.setAttribute('role',error?'alert':'status');
+ out.classList.toggle('falc-alerta-duplicado-v11',!!conflict);
+ out.classList.toggle('falc-alerta-error-v11',!!error&&!conflict);
+ out.classList.toggle('falc-alerta-ok-v11',!error);
+ out.textContent=error||'Revisión local correcta (sin guardar): '+falcAdicionalBorradorV6.length+' tramo(s). Pendiente de guardado en el motor y auditoría histórica posterior.';
+ document.querySelectorAll('#falc-adicional-v6 input[data-key="codigo"]').forEach(input=>{
+  const matched=!!conflict&&input.value.trim().toUpperCase()===conflict;
+  input.classList.toggle('falc-codigo-conflicto-v11',matched);
+  if(matched)input.setAttribute('aria-invalid','true');else input.removeAttribute('aria-invalid');
+ });
+ if(error){out.scrollIntoView({block:'nearest',behavior:'smooth'});}
+}
+
+</script>
+<style>
+/* V8: una sola navegación; los tres indicadores son los accesos */
+#v8-tabs,.v8-tabs{display:none!important}
+.v932-kpis{gap:8px!important}
+.v932-kpi{cursor:pointer;min-width:0!important;overflow-wrap:anywhere}
+#v932-modal .v932-sheet{max-height:92dvh;overflow:auto;max-width:min(94vw,760px);box-sizing:border-box}
+#v932-modal .v932-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:540px){#v932-modal .v932-row{grid-template-columns:minmax(0,1fr)!important}.v932-kpi{padding:9px 5px!important}}
+</style>
+</body></html>
