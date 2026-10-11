@@ -1790,7 +1790,14 @@ function falcCCRevisionPrecargada(j){
 }
 function falcCCTecnicos(id,t){
  const esc=x=>v8Esc(String(x==null?'':x));
- return '<div class="v932-row"><div><label>MH arriba</label><input data-falc="'+esc(id)+'" data-campo="mhArriba" value="'+esc(t.mhArriba||'')+'"></div><div><label>MH abajo</label><input data-falc="'+esc(id)+'" data-campo="mhAbajo" value="'+esc(t.mhAbajo||'')+'"></div></div>'+['diametro','material','barrio'].map(c=>'<label>'+({diametro:'Diámetro',material:'Material',barrio:'Barrio'}[c])+'</label><input data-falc="'+esc(id)+'" data-campo="'+c+'" value="'+esc(t[c]||'')+'">').join('');
+ const DIAMETROS=['150','200','250','300','400','+400'];
+ const MATERIALES=['PVC','Gres','Asbesto-cemento','HF','Concreto'];
+ const opts=(arr,sel)=>'<option value="">Seleccionar…</option>'+arr.map(x=>'<option value="'+esc(x)+'"'+(String(sel||'')===String(x)?' selected':'')+'>'+esc(x)+'</option>').join('');
+ return '<div class="v932-row"><div><label>MH arriba</label><input data-falc="'+esc(id)+'" data-campo="mhArriba" value="'+esc(t.mhArriba||'')+'"></div><div><label>MH abajo</label><input data-falc="'+esc(id)+'" data-campo="mhAbajo" value="'+esc(t.mhAbajo||'')+'"></div></div>'
+  +'<label>Diámetro</label><select data-falc="'+esc(id)+'" data-campo="diametro">'+opts(DIAMETROS,t.diametro)+'</select>'
+  +'<label>Material</label><select data-falc="'+esc(id)+'" data-campo="material">'+opts(MATERIALES,t.material)+'</select>'
+  +'<label>Barrio</label><input data-falc="'+esc(id)+'" data-campo="barrio" value="'+esc(t.barrio||'')+'">';
+}  
 }
 </script>
 
