@@ -1719,7 +1719,7 @@ async function fccEnviarExV15(btn){
  <footer class="pie">ORIGEN: ${esc(tipo)} · REFERENCIA: ${esc(referencia)} · DECLARACIÓN RECIBIDA · PENDIENTE DE VERIFICACIÓN</footer>
  <div class="aviso">Documento generado desde una declaración del contratista; no constituye validación de ejecución.</div>
  </main></body></html>`;
- const w=window.open('','_blank');
+  const w=winExistente||window.open('','_blank');
  if(!w){alert('Registro confirmado. Habilita ventanas emergentes para visualizar el FALC-XX.');return;}
  w.document.open();w.document.write(pagina);w.document.close();w.focus();
 }
