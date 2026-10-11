@@ -1915,13 +1915,18 @@ function falcAgregarAdicionalV6(){falcAdicionalBorradorV6.push({codigo:'',ml:'',
 function falcEliminarAdicionalV6(i){falcAdicionalBorradorV6.splice(i,1);falcPintarAdicionalV6();}
 function falcRevisarAdicionalV6(){
  const out=document.getElementById('falc-estado-v6');if(!out)return;
+ const RX_CAM=/^C\d{1,2}-\d{1,4}$/;
  const seen=new Set();let error='',conflict='';
  const originals=new Set((window.falcCodigosOriginalesV8||[]).map(c=>String(c).trim().toUpperCase()));
  if(!falcAdicionalBorradorV6.length)error='Agrega al menos un tramo.';
  for(const t of falcAdicionalBorradorV6){
   if(error)break;
   const c=String(t.codigo||'').trim().toUpperCase();
-  if(!c||!String(t.mhArriba||'').trim()||!String(t.mhAbajo||'').trim()||t.ml===''||!Number.isFinite(Number(t.ml))||Number(t.ml)<0){error='Completa código, MH arriba, MH abajo y longitud válida en cada tramo.';break;}
+  const ma=String(t.mhArriba||'').trim().toUpperCase();
+  const mb=String(t.mhAbajo||'').trim().toUpperCase();
+  if(!c||!ma||!mb||t.ml===''||!Number.isFinite(Number(t.ml))||Number(t.ml)<0){error='Completa código, MH arriba, MH abajo y longitud válida en cada tramo.';break;}
+  if(!RX_CAM.test(ma)){error='MH ARRIBA inválido: "'+ma+'". Formato: C + 1-2 dígitos + guion + 1-4 dígitos. Ej: C1-01, C12-1234.';break;}
+  if(!RX_CAM.test(mb)){error='MH ABAJO inválido: "'+mb+'". Formato: C + 1-2 dígitos + guion + 1-4 dígitos. Ej: C1-02, C9-99.';break;}
   if(seen.has(c)||originals.has(c)){conflict=c;error='ACCIÓN CORRECTIVA OBLIGATORIA: el tramo '+c+' ya está registrado '+(originals.has(c)?'en esta jornada.':'en este formulario.')+' Corrige el código o retira el registro repetido antes de continuar.';break;}
   seen.add(c);
  }
@@ -1935,17 +1940,12 @@ function falcRevisarAdicionalV6(){
   input.classList.toggle('falc-codigo-conflicto-v11',matched);
   if(matched)input.setAttribute('aria-invalid','true');else input.removeAttribute('aria-invalid');
  });
- if(error){out.scrollIntoView({block:'nearest',behavior:'smooth'});}
-}
-
-</script>
-<style>
-/* V8: una sola navegación; los tres indicadores son los accesos */
-#v8-tabs,.v8-tabs{display:none!important}
-.v932-kpis{gap:8px!important}
-.v932-kpi{cursor:pointer;min-width:0!important;overflow-wrap:anywhere}
-#v932-modal .v932-sheet{max-height:92dvh;overflow:auto;max-width:min(94vw,760px);box-sizing:border-box}
-#v932-modal .v932-row{grid-template-columns:repeat(2,minmax(0,1fr))}
-@media(max-width:540px){#v932-modal .v932-row{grid-template-columns:minmax(0,1fr)!important}.v932-kpi{padding:9px 5px!important}}
-</style>
-</body></html>
+ if(error){
+  document.querySelectorAll('#falc-adicional-v6 input[data-key="mhArriba"],#falc-adicional-v6 input[data-key="mhAbajo"]').forEach(inp=>{
+   const val=inp.value.trim().toUpperCase();
+   const esRaro=val&&!RX_CAM.test(val);
+   inp.classList.toggle('falc-codigo-conflicto-v11',!!esRaro);
+   if(esRaro)inp.setAttribute('aria-invalid','true');else inp.removeAttribute('aria-invalid');
+  });
+  out.scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
