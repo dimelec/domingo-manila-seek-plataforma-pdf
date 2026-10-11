@@ -1678,9 +1678,7 @@ async function fccEnviarExV15(btn){
   o.textContent='SIN CONFIRMACIÓN: '+e.message;btn.disabled=false;
  }
 }
-
-
-function falcImprimirV16(datos,referencia,tipo){
+  function falcImprimirV16(datos,referencia,tipo,winExistente){
  // V16.3: cabecera y distribución documental armonizadas con el PDF del operador.
  // No altera la persistencia ni las alertas: se ejecuta después de la confirmación del motor.
  const esc=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
