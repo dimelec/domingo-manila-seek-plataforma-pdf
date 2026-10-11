@@ -1797,8 +1797,8 @@ function falcCCTecnicos(id,t){
  const tip='Formato: C + 1-2 dígitos + "-" + 1-4 dígitos. Ej: C1-01, C12-1234, C9-99';
  return '<div class="v932-row"><div><label>MH arriba</label><input data-falc="'+esc(id)+'" data-campo="mhArriba" value="'+esc(t.mhArriba||'')+'" pattern="'+pat+'" title="'+esc(tip)+'" placeholder="C1-01" maxlength="8"></div><div><label>MH abajo</label><input data-falc="'+esc(id)+'" data-campo="mhAbajo" value="'+esc(t.mhAbajo||'')+'" pattern="'+pat+'" title="'+esc(tip)+'" placeholder="C1-02" maxlength="8"></div></div>'
   +'<label>Diámetro</label><select data-falc="'+esc(id)+'" data-campo="diametro">'+opts(DIAMETROS,t.diametro)+'</select>'
-  +'<label>Material</label><select data-falc="'+esc(id)+'" data-campo="material">'+opts(MATERIALES,t.material)+'</select>'
-  +'<label>Barrio</label><input data-falc="'+esc(id)+'" data-campo="barrio" value="'+esc(t.barrio||'')+'">';
+  +'<label>Material</label><select data-falc="'+esc(id)+'" data-campo="material">'+opts(MATERIALES,t.material)+'</select>';
+  
 }  
 
 </script>
@@ -1889,7 +1889,7 @@ v932AbrirReporte=async function(raw){
   const DIA_COMUN=['150','200','250','300','400','+400'];
   const MAT_COMUN=['PVC','Gres','Asbesto-cemento','HF','Concreto'];
   const optComun=(arr)=>'<option value="">Seleccionar…</option>'+arr.map(x=>'<option value="'+e(x)+'">'+e(x)+'</option>').join('');
- html+='<div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro</label><select id="falc-comun-diametro" onchange="falcPropagarComun()">'+optComun(DIA_COMUN)+'</select></div><div><label>Material</label><select id="falc-comun-material" onchange="falcPropagarComun()">'+optComun(MAT_COMUN)+'</select></div></div><div class="hint" style="margin-top:8px">Al seleccionar aquí, el valor se copia a <b>todos los tramos</b>.</div><div class="v932-meta">Barrio: '+e(r.jornada?.barrio||j.barrio||'Sin dato del motor')+' (dato del sistema)</div></div>';
+ html+='<div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro</label><select id="falc-comun-diametro" onchange="falcPropagarComun()">'+optComun(DIA_COMUN)+'</select></div><div><label>Material</label><select id="falc-comun-material" onchange="falcPropagarComun()">'+optComun(MAT_COMUN)+'</select></div></div><div class="hint" style="margin-top:8px">Al seleccionar aquí, el valor se copia a <b>todos los tramos</b>.</div>';
   html+=tr.length?tr.map((t,i)=>'<div class="v932-card"><div class="v932-title">Tramo '+e(t.tramo||t.codigo||'—')+'</div><div class="v932-meta">Apto CCTV: '+e(t.aptoCCTV||t.apto||'Sin dato')+' · ML: '+e(t.ml??t.mlLimpiados??'Sin dato')+'<div>'+e(t.observacion||'')+'</div></div>'+falcCCTecnicos(i,t)+'</div>').join(''):'<div class="hint">No se recibieron cierres de tramo identificables. No se inventarán registros.</div>';
 
   html+='<div class="v932-card"><button type="button" class="v932-action" onclick="falcMostrarAdicionalV6()">+ Solicitar ingreso de tramo adicional</button></div>';
