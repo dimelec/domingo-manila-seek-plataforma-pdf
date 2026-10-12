@@ -105,7 +105,7 @@
       },
       contratista:String(datos.contratista||''),
       contrato:falcContratoDe(datos.contratista),
-      operador:String(datos.operador||''),
+      operador:String(datos.operador||'').toUpperCase(),
       inspector:String(datos.inspector||''),
       tramos:tramos,
       novedades:String(datos.novedad||datos.novedades||'Sin novedades registradas.'),
