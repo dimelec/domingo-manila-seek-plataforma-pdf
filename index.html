@@ -1990,6 +1990,7 @@ function falcTramosDeEventosV3(ev){
 /* Sustituye el formulario general de declaración por lectura técnica del operador. */
 v932AbrirReporte=async function(raw){
  let j;try{j=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){toast('Jornada inválida');return;}
+   window.__FALC_JORNADA_ABIERTA__ = j;
  const sh=document.getElementById('v932-sheet');document.getElementById('v932-modal').classList.add('on');
  falcAdicionalBorradorV6=[]; window.falcCodigosOriginalesV8=[];
  sh.innerHTML='<h3>Consultando tramos del operador…</h3>';
