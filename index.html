@@ -2002,7 +2002,7 @@ v932AbrirReporte=async function(raw){
   window.falcCodigosOriginalesV8=tr.map(t=>String(t.tramo||t.codigo||t.codigoTramo||t.idTramo||'').trim().toUpperCase()).filter(Boolean);
   const e=x=>v8Esc(String(x==null?'':x));
   let html='<h3>Complemento técnico de jornada</h3><div class="v932-meta">'+e(j.placa)+' · '+e(j.barrio)+' · '+e(j.turno||'')+'</div>';
-  html+='<div class="hint">Registro original del operador: solo lectura. Los campos técnicos son una vista preliminar y no se guardan todavía.</div>';
+  html+='<div class="hint">Registro original del operador: solo lectura. Completa los campos técnicos y pulsa "Guardar y generar PDF".</div>';
   const DIA_COMUN=['150','200','250','300','400','+400'];
   const MAT_COMUN=['PVC','Gres','Asbesto-cemento','HF','Concreto'];
   const optComun=(arr)=>'<option value="">Seleccionar…</option>'+arr.map(x=>'<option value="'+e(x)+'">'+e(x)+'</option>').join('');
