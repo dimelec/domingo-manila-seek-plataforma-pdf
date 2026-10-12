@@ -114,7 +114,7 @@
         aguaM3:String(datos.aguaM3||datos.agua||''),
         lodos:String(datos.lodos||'DENTRO').toUpperCase()
       },
-      origen:'ORIGEN: '+tipo+' · REF: '+referencia+' · GENERADO: '+new Date().toLocaleString('es-CO')+' · POR: '+(datos.operador||(window.V8&&V8.nombre)||'—')
+      origen:'ORIGEN: '+tipo.toUpperCase()+' · REF: '+referencia+' · GENERADO: '+new Date().toLocaleString('es-CO')+' · POR: '+(((window.V8&&V8.nombre)||datos.operador||'—').toUpperCase())
     };
   }
 
