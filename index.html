@@ -10,6 +10,35 @@
   --bg:#0d0f14; --card:#191c24; --card2:#212531; --line:#2d3340;
   --text:#f5f3ff; --sub:#aaa4bd; --accent:#7c3aed; --accent2:#a78bfa;
   --good:#22c55e; --warn:#f59e0b; --bad:#ef4444; --radius:14px;
+  .v8-tab.tab-tareas.on{background:#2563eb;border-color:#2563eb}
+.v8-tab.tab-gestion.on{background:#ea580c;border-color:#ea580c}
+.v8-tab.tab-complemento.on{background:#16a34a;border-color:#16a34a}
+.v8-tab.tab-excepcional.on{background:#dc2626;border-color:#dc2626}
+
+.v8-tab.tab-tareas:not(.on){color:#1e3a8a}
+.v8-tab.tab-gestion:not(.on){color:#9a3412}
+.v8-tab.tab-complemento:not(.on){color:#14532d}
+.v8-tab.tab-excepcional:not(.on){color:#7f1d1d}
+
+.seccion-complemento{
+  background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 55%);
+  border-left:5px solid #16a34a;
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.seccion-complemento h3{color:#14532d;margin:0 0 6px;font-size:15px}
+.seccion-complemento .hint{color:#166534}
+
+.seccion-excepcional{
+  background:linear-gradient(180deg,#fef2f2 0%,#ffffff 55%);
+  border-left:5px solid #dc2626;
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.seccion-excepcional h3{color:#7f1d1d;margin:0 0 6px;font-size:15px}
+.seccion-excepcional .hint{color:#991b1b}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:40px}
@@ -1458,10 +1487,17 @@ v8RenderRol=function(){
   document.getElementById('v8-user-name').textContent=V8.nombre;
   document.getElementById('v8-role-name').textContent='Contratista';
   document.getElementById('v8-role-header').innerHTML='<div class="card access-hero"><div class="brand-title" style="font-size:21px">Contratista</div></div>';
-  const tabs=['tareasContratista','gestionContratista','reporteJornada'];
-  if(!tabs.includes(V8.tab))V8.tab=tabs[0];
-  const labels={tareasContratista:'Tareas',gestionContratista:'Gestión',reporteJornada:'Reportar Jornada'};
-  document.getElementById('v8-tabs').innerHTML='';
+ const tabs=[
+  {id:'tareasContratista',   label:'Tareas',              cls:'tab-tareas'},
+  {id:'gestionContratista',  label:'Gestión',             cls:'tab-gestion'},
+  {id:'reporteJornada',      label:'Complemento Técnico', cls:'tab-complemento'},
+  {id:'ingresoExcepcional',  label:'Ingreso Excepcional', cls:'tab-excepcional'}
+];
+const ids=tabs.map(function(t){return t.id;});
+if(!ids.includes(V8.tab))V8.tab=tabs[0].id;
+document.getElementById('v8-tabs').innerHTML=tabs.map(function(t){
+  return '<button class="v8-tab '+t.cls+' '+(V8.tab===t.id?'on':'')+'" onclick="v8Tab(\''+t.id+'\')">'+t.label+'</button>';
+}).join('');
   v8CargarVista();
 };
 
@@ -1474,8 +1510,9 @@ v8CargarVista=async function(){
     V8.nombre=V932_DATA.usuario.nombre||V932_DATA.usuario.contratista||V8.nombre;
     document.getElementById('v8-user-name').textContent=V8.nombre;
     if(V8.tab==='tareasContratista')b.innerHTML=v932VistaTareas(V932_DATA);
-    else if(V8.tab==='gestionContratista')b.innerHTML=v932VistaGestion(V932_DATA);
-    else b.innerHTML=v932VistaJornadas(V932_DATA);
+else if(V8.tab==='gestionContratista')b.innerHTML=v932VistaGestion(V932_DATA);
+else if(V8.tab==='ingresoExcepcional')b.innerHTML=v932VistaIngresoExcepcional(V932_DATA);
+else b.innerHTML=v932VistaJornadas(V932_DATA);
   }catch(e){b.innerHTML=`<div class="v932-empty">No fue posible consultar el Motor.<br><small>${v8Esc(e.message)}</small></div>`;}
 };
 
@@ -1535,15 +1572,9 @@ function v932VistaJornadas(d){
  const tarjetas=(arr)=>arr.map((j,i)=>{const idx=js.indexOf(j);return `<div class="v932-card"><div class="v932-title">${v8Esc(j.placa||'Sin placa')} · ${v8Esc(j.barrio||'Sin barrio')}</div><div class="v932-meta">${v932EtiquetaJornada(j)} · ${v8Esc(j.turno||'Turno sin definir')}<br>${v8Esc(j.idJornada||'')} · ${Number(j.mlTrazable||0).toLocaleString('es-CO')} ML del operador</div><button class="v932-action" onclick="v932AbrirReporte(JSON.stringify(window.FCC_JORNADAS[${idx}]))">Abrir y complementar</button></div>`;}).join('');
  return v932Kpis(d)+`<div class="card"><h3>Jornadas por reforzar</h3><div class="hint">Solo jornadas cerradas y enviadas por el operador que requieren refuerzo. El motor debe determinar cuáles están pendientes.</div></div>`+
  (pendientes.length?tarjetas(pendientes):'<div class="v932-empty">No hay jornadas pendientes en la bandeja.</div>')+
-
- `<div class="card"><h3>Ingreso excepcional</h3><div class="hint">Primero consulta. Si la consulta no encuentra la jornada, se permite declarar el ingreso excepcional, que quedará sujeto a verificación posterior por los responsables. Los datos consultados se conservan bloqueados.</div>
- <label>Fecha</label><input id="fcc-fecha" type="date" onchange="fccInvalidarConsulta()">
- <label>Placa asociada</label><select id="fcc-placa" onchange="fccInvalidarConsulta()"><option value="">Selecciona placa</option></select>
- <label>Jornada</label><select id="fcc-turno" onchange="fccInvalidarConsulta()"><option value="">Selecciona...</option><option value="DIURNO">Diurno</option><option value="NOCTURNO">Nocturno</option></select>
- <label>Barrio del motor</label><select id="fcc-barrio" onchange="fccCambioBarrio();fccInvalidarConsulta()"><option value="">Selecciona barrio</option></select>
- <div id="fcc-otro-wrap" style="display:none"><label>Otro barrio (especificar)</label><input id="fcc-otro-barrio" placeholder="Nombre del barrio" oninput="fccInvalidarConsulta()"></div>
- <button class="btn" onclick="fccConsultar(this)">Verificar con el motor</button></div><div id="fcc-respuesta"></div>`;
-}
+`<div class="seccion-complemento"><h3>📝 Jornadas por reforzar</h3><div class="hint">Solo jornadas cerradas y enviadas por el operador que requieren refuerzo.</div></div>`+
+ (pendientes.length?tarjetas(pendientes):'<div class="v932-empty">No hay jornadas pendientes en la bandeja.</div>');
+ }
 window.FCC_CONSULTA_AUTORIZADA=null;
 function fccInvalidarConsulta(){window.FCC_CONSULTA_AUTORIZADA=null;const o=document.getElementById("fcc-respuesta");if(o)o.innerHTML="";}
 function fccCambioBarrio(){const x=document.getElementById('fcc-barrio');document.getElementById('fcc-otro-wrap').style.display=x.value==='__OTRO__'?'block':'none';}
@@ -2010,6 +2041,22 @@ function falcPropagarComun(){
     }
     console.warn('[FALC] falc-pdf.js no se cargó');
   };
+
+  function v932VistaIngresoExcepcional(d){
+ setTimeout(function(){
+  if(typeof fccCargarCatalogos==='function')fccCargarCatalogos();
+ }, 100);
+ return `<div class="seccion-excepcional"><h3>⚠️ Ingreso excepcional</h3><div class="hint">Primero consulta. Si la consulta no encuentra la jornada, se permite declarar el ingreso excepcional, que quedará sujeto a verificación posterior por los responsables.</div></div>
+ <div class="card">
+  <label>Fecha</label><input id="fcc-fecha" type="date" onchange="fccInvalidarConsulta()">
+  <label>Placa asociada</label><select id="fcc-placa" onchange="fccInvalidarConsulta()"><option value="">Selecciona placa</option></select>
+  <label>Jornada</label><select id="fcc-turno" onchange="fccInvalidarConsulta()"><option value="">Selecciona...</option><option value="DIURNO">Diurno</option><option value="NOCTURNO">Nocturno</option></select>
+  <label>Barrio del motor</label><select id="fcc-barrio" onchange="fccCambioBarrio();fccInvalidarConsulta()"><option value="">Selecciona barrio</option></select>
+  <div id="fcc-otro-wrap" style="display:none"><label>Otro barrio (especificar)</label><input id="fcc-otro-barrio" placeholder="Nombre del barrio" oninput="fccInvalidarConsulta()"></div>
+  <button class="btn" onclick="fccConsultar(this)">Verificar con el motor</button>
+ </div>
+ <div id="fcc-respuesta"></div>`;
+}
 </script>
 
 </body>
