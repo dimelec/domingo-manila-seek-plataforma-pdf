@@ -112,7 +112,7 @@
       resumen:{
         longitudTotalApta:totalApto?totalApto.toFixed(2):'—',
         aguaM3:String(datos.aguaM3||datos.agua||''),
-        lodos:String(datos.lodos||'DENTRO').toUpperCase()
+        lodos:String(datos.lodos||'').toUpperCase().trim()
       },
       origen:'ORIGEN: '+tipo.toUpperCase()+' · REF: '+referencia+' · GENERADO: '+new Date().toLocaleString('es-CO')+' · POR: '+(((window.V8&&V8.nombre)||datos.operador||'—').toUpperCase())
     };
@@ -146,8 +146,9 @@
     }).join('');
 
     var horaNeta=calcularHoraNeta(id.horaInicio,id.horaFin);
-    var lodosD=datos.resumen.lodos==='DENTRO'?'X':' ';
-    var lodosF=datos.resumen.lodos==='FUERA' ?'X':' ';
+    var tieneLodos=datos.resumen.lodos==='DENTRO'||datos.resumen.lodos==='FUERA';
+    var lodosD=tieneLodos&&datos.resumen.lodos==='DENTRO'?'X':' ';
+    var lodosF=tieneLodos&&datos.resumen.lodos==='FUERA' ?'X':' ';
 
     return '<!doctype html><html lang="es"><head><meta charset="utf-8"><title>FALC-XX · '+esc(datos.referencia)+'</title><style>'
       +'@page{size:A4 landscape;margin:9mm}*{box-sizing:border-box}'
@@ -235,7 +236,7 @@
       +'</div>'
       +'<div>'
       +'<div style="padding:2mm 2.5mm;border-bottom:1px solid #6e7a81"><b style="display:block;font-size:8px;margin-bottom:1.2mm">DESCARGA LODOS:</b>'
-      +'<span style="font-size:9px">['+lodosD+'] DENTRO &nbsp; ['+lodosF+'] FUERA</span></div>'
++'<span style="font-size:9px">'+(tieneLodos?'['+lodosD+'] DENTRO &nbsp; ['+lodosF+'] FUERA':'—')+'</span></div>'
       +'<div class="leyenda" style="padding:2mm 2.5mm"><ul>'
       +'<li>Tramo NO apto = longitud en blanco y motivo en observaciones.</li>'
       +'<li>En continuidad indicar tramo, condición y acción pendiente.</li>'
