@@ -178,7 +178,7 @@
       +'</style></head><body><main class="documento"><table class="falc">'
 
       +'<tr>'
-      +'<td class="celda-logo" colspan="3"><img src="data:image/png;base64,'+LOGO_B64+'" alt="Aguas de Cartagena"></td>'
+      +'<td class="celda-logo" colspan="3"><img src="./Logo%20Acu.png" alt="Aguas de Cartagena"></td>'
       +'<td class="celda-titulo" colspan="5">CONTROL DIARIO MANTENIMIENTO PREVENTIVO<br>LIMPIEZA CON EQUIPO PRESION SUCCION</td>'
       +'<td class="celda-control" colspan="2">'
       +'<div><b>Código:</b> '+esc(FALC_META.codigo)+'</div>'
