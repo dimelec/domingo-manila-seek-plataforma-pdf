@@ -1989,5 +1989,18 @@ function falcPropagarComun(){
  });
 }
 </script>
+
+<script src="./falc-pdf.js"></script>
+<script>
+  /* Sobrescribe la función de impresión para que use el formato nuevo de falc-pdf.js */
+  window.falcImprimirV16 = function(datos,referencia,tipo,winExistente){
+    if(window.falcImprimirFALC){
+      return window.falcImprimirFALC(datos,referencia,tipo,winExistente);
+    }
+    console.warn('[FALC] falc-pdf.js no se cargó');
+  };
+</script>
+
 </body>
+</html>
 </html>
