@@ -49,6 +49,39 @@ h2{font-size:13px;color:var(--sub);margin:0 0 20px;font-weight:500}
 h3{font-size:15px;margin:0 0 12px;font-weight:700}
 .card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid var(--line)}
 
+  /* ==== Variantes de tarjeta por pestaña ==== */
+.v932-card.card-tareas{
+  background:linear-gradient(180deg,#eff6ff 0%,#ffffff 60%);
+  border-left:5px solid #2563eb;
+}
+.v932-card.card-tareas .v932-title{color:#1e3a8a}
+.v932-card.card-tareas .v932-tag{background:#dbeafe;color:#1e40af}
+.v932-card.card-tareas .v932-action{background:#1e40af}
+
+.v932-card.card-gestion{
+  background:linear-gradient(180deg,#fff7ed 0%,#ffffff 60%);
+  border-left:5px solid #ea580c;
+}
+.v932-card.card-gestion .v932-title{color:#9a3412}
+.v932-card.card-gestion .v932-tag{background:#ffedd5;color:#9a3412}
+.v932-card.card-gestion .v932-action{background:#c2410c}
+
+.v932-card.card-complemento{
+  background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 60%);
+  border-left:5px solid #16a34a;
+}
+.v932-card.card-complemento .v932-title{color:#14532d}
+.v932-card.card-complemento .v932-tag{background:#dcfce7;color:#166534}
+.v932-card.card-complemento .v932-action{background:#166534}
+
+.v932-card.card-excepcional{
+  background:linear-gradient(180deg,#fef2f2 0%,#ffffff 60%);
+  border-left:5px solid #dc2626;
+}
+.v932-card.card-excepcional .v932-title{color:#7f1d1d}
+.v932-card.card-excepcional .v932-tag{background:#fee2e2;color:#991b1b}
+.v932-card.card-excepcional .v932-action{background:#991b1b}
+
 /* ===== Selector de rol V8 ===== */
 .brand-kicker{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent2);font-weight:800}
 .brand-title{font-size:26px;font-weight:850;line-height:1.05;margin:5px 0 6px}
@@ -1520,7 +1553,7 @@ function v932Kpis(d){const r=d.resumen||{};return `<div class="v932-kpis"><div c
 function v932VistaTareas(d){
   let h=v932Kpis(d)+`<div class="card"><div class="section-label">${v8Esc(d.usuario.contratista)}</div><div class="hint">Órdenes asignadas a tu contrato. Selecciona una para ver jornadas y cortes.</div></div>`;
   const xs=d.tareas||[];if(!xs.length)return h+'<div class="v932-empty">Sin tareas activas.</div>';
-  return h+xs.map(t=>`<div class="v932-card"><span class="v932-tag">${v8Esc(t.estado||'ACTIVA')}</span><div class="v932-title">${v8Esc(t.nombre||t.idTarea)}</div><div class="v932-meta">${v8Esc(t.barrio||'')} · Meta ${Number(t.metaMl||0).toLocaleString('es-CO')} ML<br>${v8Esc(t.objetivo||'')}${t.proximoCorte?'<br>Fecha de corte registrada: '+v8Esc(t.proximoCorte):''}</div><button class="v932-action" data-tarea-id="${v8Esc(t.idTarea||'')}" onclick="v932AbrirSeguimiento(this.dataset.tareaId)">Ver tablero de corte</button></div>`).join('');
+  return h+xs.map(t=>`<div class="v932-card card-tareas"><span class="v932-tag">${v8Esc(t.estado||'ACTIVA')}</span><div class="v932-title">${v8Esc(t.nombre||t.idTarea)}</div><div class="v932-meta">${v8Esc(t.barrio||'')} · Meta ${Number(t.metaMl||0).toLocaleString('es-CO')} ML<br>${v8Esc(t.objetivo||'')}${t.proximoCorte?'<br>Fecha de corte registrada: '+v8Esc(t.proximoCorte):''}</div><button class="v932-action" data-tarea-id="${v8Esc(t.idTarea||'')}" onclick="v932AbrirSeguimiento(this.dataset.tareaId)">Ver tablero de corte</button></div>`).join('');
 }
 async function v932AbrirSeguimiento(idTarea){
  const sh=document.getElementById('v932-sheet');
@@ -1547,7 +1580,7 @@ async function v932AbrirSeguimiento(idTarea){
 function v932VistaGestion(d){
   let h=v932Kpis(d)+'<div class="card"><div class="section-label">Gestión</div><div class="hint">Aquí aparecen los NO APTO CCTV que requieren relimpieza. La reinspección queda a cargo de CCTV.</div></div>';
   const xs=(d.gestion&&d.gestion.cctvPendientes)||[];if(!xs.length)return h+'<div class="v932-empty">✓ Sin gestiones CCTV pendientes.</div>';
-  return h+xs.map(x=>`<div class="v932-card"><span class="v932-tag bad">NO APTO CCTV</span><div class="v932-title">Tramo ${v8Esc(x.tramo||'')}</div><div class="v932-meta">${v8Esc(x.idTarea||'')} · ${v8Esc(x.barrio||'')}<br>${v8Esc(x.placa||'')} · ${Number(x.ml||0).toLocaleString('es-CO')} ML</div><button class="v932-action" onclick='v932AbrirRelimpieza(${JSON.stringify(JSON.stringify(x))})'>Reportar relimpieza</button></div>`).join('');
+  return h+xs.map(x=>`<div class="v932-card card-gestion"><span class="v932-tag bad">NO APTO CCTV</span><div class="v932-title">Tramo ${v8Esc(x.tramo||'')}</div><div class="v932-meta">${v8Esc(x.idTarea||'')} · ${v8Esc(x.barrio||'')}<br>${v8Esc(x.placa||'')} · ${Number(x.ml||0).toLocaleString('es-CO')} ML</div><button class="v932-action" onclick='v932AbrirRelimpieza(${JSON.stringify(JSON.stringify(x))})'>Reportar relimpieza</button></div>`).join('');
 }
 function v932HoraHumana(h){
   h=String(h||'').trim();
@@ -1569,7 +1602,7 @@ function v932VistaJornadas(d){
  window.FCC_JORNADAS=js;
  const pendientes=js.filter(j=>!j.reportadaContratista && (j.requiereRefuerzo!==false) && (j.estadoRefuerzo!=="COMPLETADO"));
 
- const tarjetas=(arr)=>arr.map((j,i)=>{const idx=js.indexOf(j);return `<div class="v932-card"><div class="v932-title">${v8Esc(j.placa||'Sin placa')} · ${v8Esc(j.barrio||'Sin barrio')}</div><div class="v932-meta">${v932EtiquetaJornada(j)} · ${v8Esc(j.turno||'Turno sin definir')}<br>${v8Esc(j.idJornada||'')} · ${Number(j.mlTrazable||0).toLocaleString('es-CO')} ML del operador</div><button class="v932-action" onclick="v932AbrirReporte(JSON.stringify(window.FCC_JORNADAS[${idx}]))">Abrir y complementar</button></div>`;}).join('');
+ const tarjetas=(arr)=>arr.map((j,i)=>{const idx=js.indexOf(j);return `<div class="v932-card card-complemento"><div class="v932-title">${v8Esc(j.placa||'Sin placa')} · ${v8Esc(j.barrio||'Sin barrio')}</div><div class="v932-meta">${v932EtiquetaJornada(j)} · ${v8Esc(j.turno||'Turno sin definir')}<br>${v8Esc(j.idJornada||'')} · ${Number(j.mlTrazable||0).toLocaleString('es-CO')} ML del operador</div><button class="v932-action" onclick="v932AbrirReporte(JSON.stringify(window.FCC_JORNADAS[${idx}]))">Abrir y complementar</button></div>`;}).join('');
  return v932Kpis(d)+`<div class="card"><h3>Jornadas por reforzar</h3><div class="hint">Solo jornadas cerradas y enviadas por el operador que requieren refuerzo. El motor debe determinar cuáles están pendientes.</div></div>`+
  (pendientes.length?tarjetas(pendientes):'<div class="v932-empty">No hay jornadas pendientes en la bandeja.</div>')+
 `<div class="seccion-complemento"><h3>📝 Jornadas por reforzar</h3><div class="hint">Solo jornadas cerradas y enviadas por el operador que requieren refuerzo.</div></div>`+
