@@ -1674,9 +1674,9 @@ function fccPintarExV9(){
  <div class="v932-card"><strong>Identidad consultada al motor (bloqueada)</strong><div class="v932-meta">Fecha: ${e(q.fecha)} · Placa: ${e(q.placa)} · Jornada: ${e(q.jornada)} · Barrio: ${e(q.barrio)}</div></div>
  <div class="hint">Declaración excepcional sujeta a verificación humana. No sustituye una jornada existente.</div>
  <div class="v932-card"><strong>Datos documentales</strong>
- <label>Nombre del operador *</label><input data-fcc-ex="operador" value="${e(d.operador)}" autocomplete="off">
+ <label>Operador *</label><select data-fcc-ex="operador" id="fcc-ex-operador"><option value="">Cargando operadores…</option></select>
  <div class="v932-row"><div><label>Hora de inicio *</label><input type="time" data-fcc-ex="horaInicio" value="${e(d.horaInicio)}"></div><div><label>Hora final *</label><input type="time" data-fcc-ex="horaFin" value="${e(d.horaFin)}"></div></div>
-  <label>Agua utilizada (m³) *</label><input type="number" min="0" step="0.01" data-fcc-ex="agua" value="${e(d.agua)}">
+ <label>Agua utilizada (m³) * (0 a 10)</label><input type="number" min="0" max="10" step="0.1" data-fcc-ex="agua" value="${e(d.agua)}" placeholder="Ej: 5">
  <label>Descarga de lodos</label><select data-fcc-ex="lodos"><option value=""${!d.lodos?' selected':''}>Sin dato</option><option value="DENTRO"${d.lodos==='DENTRO'?' selected':''}>Dentro</option><option value="FUERA"${d.lodos==='FUERA'?' selected':''}>Fuera</option></select>
  <label>Novedad / observación general</label><textarea data-fcc-ex="novedad">${e(d.novedad)}</textarea></div> <div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro *</label><select data-fcc-ex="diametro"><option value="">Seleccionar…</option>${['150','200','250','300','400','+400'].map(x=>'<option value="'+x+'"'+(String(d.diametro||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div><div><label>Material *</label><select data-fcc-ex="material"><option value="">Seleccionar…</option>${['PVC','Gres','Asbesto-cemento','HF','Concreto'].map(x=>'<option value="'+x+'"'+(String(d.material||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div></div></div>
  ${fccTramosExV9.map((t,i)=>`<div class="v932-card"><strong>Tramo adicional ${i+1} · APTO CCTV: SÍ</strong>
@@ -1692,7 +1692,22 @@ function fccPintarExV9(){
  <button type="button" class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>`;
  sh.querySelectorAll('[data-fcc-i]').forEach(el=>el.addEventListener('input',()=>{fccTramosExV9[Number(el.dataset.fccI)][el.dataset.fccKey]=el.value;}));
  sh.querySelectorAll('[data-fcc-ex]').forEach(el=>{const h=()=>{fccExDatos[el.dataset.fccEx]=el.value;};el.addEventListener('input',h);el.addEventListener('change',h);});
- sh.querySelector('#fcc-ex-confirmar').addEventListener('change',ev=>fccExDatos.confirmacion=ev.target.checked);
+ sh.querySelector('#fcc-ex-confirmar').addEventListener('change',ev=>fccExDatos.confirmacion=ev.target.checked);// Cargar operadores del contratista
+(async function(){
+  try {
+    const r = await v932Jsonp('falcOperadoresContratista', {token:V8.token});
+    const sel = document.getElementById('fcc-ex-operador');
+    if (!sel) return;
+    if (r && r.ok && Array.isArray(r.operadores) && r.operadores.length) {
+      sel.innerHTML = '<option value="">Seleccionar…</option>' + r.operadores.map(o=>`<option value="${v8Esc(o)}"${d.operador===o?' selected':''}>${v8Esc(o)}</option>`).join('');
+    } else {
+      sel.innerHTML = '<option value="">Sin operadores registrados</option>';
+    }
+  } catch(e) {
+    const sel = document.getElementById('fcc-ex-operador');
+    if (sel) sel.innerHTML = '<option value="">Error al cargar operadores</option>';
+  }
+})();
 }
 function fccAgregarExV9(){fccTramosExV9.push({codigo:'',mhArriba:'',mhAbajo:'',longitud:'',observacion:''});fccPintarExV9();}
 function fccQuitarExV9(i){fccTramosExV9.splice(i,1);fccPintarExV9();}
@@ -1910,6 +1925,7 @@ v932AbrirReporte=async function(raw){
  let j;
  try{j=typeof raw==='string'?JSON.parse(raw):raw;}catch(e){toast('Jornada inválida');return;}
  if(!j.idJornada){toast('La jornada no tiene identificador');return;}
+  window.__FALC_JORNADA_ABIERTA__=j;
  const sh=document.getElementById('v932-sheet');
  sh.innerHTML='<h3>Consultando evidencia del operador…</h3><div class="hint">Esperando los eventos reales del motor.</div>';
  document.getElementById('v932-modal').classList.add('on');
@@ -1994,7 +2010,9 @@ v932AbrirReporte=async function(raw){
 
   html+='<div class="v932-card"><button type="button" class="v932-action" onclick="falcMostrarAdicionalV6()">+ Solicitar ingreso de tramo adicional</button></div>';
   html+='<div id="falc-adicional-v6" hidden></div>';
-  html+='<div class="hint">Guardado técnico pendiente de conectar al motor; los datos de esta vista no se envían todavía.</div><button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>';
+  html+='<div class="v932-card card-complemento"><button type="button" class="v932-action" style="background:#166534" onclick="falcGuardarComplemento(this)">Guardar y generar PDF</button></div>';
+html+='<div id="falc-guardar-estado" class="hint"></div>';
+html+='<button class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>';
   sh.innerHTML=html;
   // Índice basado en los tramos realmente mostrados, no solo en la forma del JSON.
   window.falcCodigosOriginalesV8=Array.from(new Set([...window.falcCodigosOriginalesV8,...Array.from(sh.querySelectorAll('.v932-title')).map(n=>{const m=n.textContent.trim().match(/^Tramo\s+(.+)$/i);return m?m[1].trim().toUpperCase():'';}).filter(Boolean)]));
@@ -2062,6 +2080,91 @@ function falcPropagarComun(){
  document.querySelectorAll('#v932-sheet select[data-campo="material"]').forEach(function(sel){
   if(m)sel.value=m;
  });
+} async function falcGuardarComplemento(btn){
+ const estado=document.getElementById('falc-guardar-estado');
+ const j=window.__FALC_JORNADA_ABIERTA__;
+ if(!j||!j.idJornada){estado.textContent='⛔ No se identifica la jornada abierta.';return;}
+
+ const di=document.getElementById('falc-comun-diametro')?.value||'';
+ const ma=document.getElementById('falc-comun-material')?.value||'';
+
+ const tramos=[];
+ document.querySelectorAll('#v932-sheet .v932-card').forEach(function(card){
+  const inpCod=card.querySelector('input[data-campo="codigo"]');
+  if(!inpCod)return;
+  const codigo=inpCod.value.trim();
+  if(!codigo)return;
+  const selD=card.querySelector('select[data-campo="diametro"]');
+  const selM=card.querySelector('select[data-campo="material"]');
+  const mhA=card.querySelector('input[data-campo="mhArriba"]');
+  const mhB=card.querySelector('input[data-campo="mhAbajo"]');
+  tramos.push({
+   codigo:codigo,
+   mhArriba:(mhA?mhA.value:'').trim().toUpperCase(),
+   mhAbajo:(mhB?mhB.value:'').trim().toUpperCase(),
+   diametro:(selD?selD.value:di).trim(),
+   material:(selM?selM.value:ma).trim(),
+   ml:Number(card.querySelector('input[data-key="ml"]')?.value||0)||0,
+   observacion:''
+  });
+ });
+
+ if(!tramos.length){estado.textContent='⛔ No hay tramos para guardar.';return;}
+
+ const win=window.open('','_blank');
+ if(win){
+  win.document.write('<html><head><title>Generando FALC-XX…</title></head><body style="font-family:sans-serif;padding:24px"><h2>Generando FALC-XX…</h2></body></html>');
+  win.document.close();
+ }
+
+ btn.disabled=true;estado.textContent='Guardando en el Motor…';
+
+ try{
+  const r=await v932Jsonp('falcGuardarComplementoTecnico',{
+   token:V8.token,
+   idJornada:j.idJornada,
+   aguaM3:Number(j.m3Trazable||0),
+   lodos:'',
+   novedad:'',
+   tramos:tramos,
+   actionId:'FCT-'+Date.now()
+  });
+  if(!r||r.ok!==true||!r.idRegistro)throw Error(r?.error||'El Motor no confirmó el guardado');
+
+  estado.textContent='✅ Guardado · Referencia: '+r.idRegistro;
+  btn.textContent='Guardado';btn.disabled=true;
+
+  falcImprimirV16({
+   identidad:{
+    fecha:j.fecha||'',
+    placa:j.placa||'',
+    jornada:j.turno||'',
+    barrio:j.barrio||''
+   },
+   contratista:j.contratista||'',
+   operador:j.operador||'',
+   horaInicio:j.horaInicio24||'',
+   horaFin:'',
+   aguaM3:j.m3Trazable||0,
+   lodos:'',
+   novedad:'',
+   tramos:tramos.map(t=>({
+    codigo:t.codigo,
+    mhArriba:t.mhArriba,
+    mhAbajo:t.mhAbajo,
+    diametro:t.diametro,
+    material:t.material,
+    ml:t.ml||0,
+    aptoCCTV:'SI',
+    observacion:t.observacion
+   }))
+  }, r.idRegistro, 'COMPLEMENTO TÉCNICO', win);
+
+ }catch(e){
+  if(win)win.close();
+  estado.textContent='⛔ '+e.message;
+  btn.disabled=false;
+ }
 }
 </script>
 
