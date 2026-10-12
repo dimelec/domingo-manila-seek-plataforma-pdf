@@ -1660,7 +1660,7 @@ async function fccEnviarExV15(btn){
  const contratistaActual=(window.V932_DATA&&V932_DATA.usuario&&V932_DATA.usuario.contratista)||'';
 const payload={identidad:{fecha:q.fecha,placa:q.placa,jornada:q.jornada,barrio:q.barrio,barrioNuevo:document.getElementById('fcc-barrio')?.value==='__OTRO__'},
 contratista:contratistaActual,
-operador:d.operador.trim(),horaInicio:d.horaInicio,horaFin:d.horaFin,aguaM3:Number(d.agua),
+operador:d.operador.trim(),horaInicio:d.horaInicio,horaFin:d.horaFin,aguaM3:Number(d.agua),lodos:d.lodos||'',
  diametro:d.diametro.trim(),material:d.material.trim(),novedad:d.novedad.trim(),
  tramos:fccTramosExV9.map(t=>({codigo:t.codigo.trim(),mhArriba:t.mhArriba.trim(),mhAbajo:t.mhAbajo.trim(),ml:Number(t.longitud),aptoCCTV:'SI',observacion:t.observacion.trim()})),
  confirmacion:true,origen:'INGRESO_EXCEPCIONAL'};
