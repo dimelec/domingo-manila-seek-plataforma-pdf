@@ -13,7 +13,7 @@
   var FALC_META = {
     codigo: 'FALC-XX',
     version: '01',
-    fecha: '___/___/______'
+    fecha: '___/___/________'
   };
 
   var CONTRATOS = {
@@ -44,12 +44,16 @@
   }
 
   function partesFecha(fecha){
-    if(!fecha)return {anio:'',mes:'',dia:''};
-    var d=new Date(fecha+'T12:00:00');
-    if(isNaN(d))return {anio:'',mes:'',dia:''};
-    var dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-    return {anio:String(d.getFullYear()),mes:String(d.getMonth()+1),dia:dias[d.getDay()]+' '+String(d.getDate())};
-  }
+  if(!fecha)return {anio:'',mes:'',dia:'',diaNum:'',diaNombre:''};
+  var d=new Date(fecha+'T12:00:00');
+  if(isNaN(d))return {anio:'',mes:'',dia:'',diaNum:'',diaNombre:''};
+  var dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var anio=String(d.getFullYear());
+  var mes=String(d.getMonth()+1).padStart(2,'0');
+  var diaNum=String(d.getDate()).padStart(2,'0');
+  var diaNombre=dias[d.getDay()];
+  return {anio:anio,mes:mes,dia:diaNombre+' '+Number(diaNum),diaNum:diaNum,diaNombre:diaNombre};
+}
 
   function calcularHoraNeta(hi,hf){
     if(!hi||!hf)return '';
@@ -183,13 +187,13 @@
       +'<td class="celda-control" colspan="2">'
       +'<div><b>Código:</b> '+esc(FALC_META.codigo)+'</div>'
       +'<div><b>Versión:</b> '+esc(FALC_META.version)+'</div>'
-      +'<div><b>Fecha:</b> '+esc(FALC_META.fecha)+'</div>'
+      +'<div><b>Fecha emisión:</b> '+esc(FALC_META.fecha)+'</div>'
       +'</td></tr>'
 
       +'<tr class="separador"><td colspan="10"></td></tr>'
 
       +'<tr><td class="franja-campo" colspan="10"><div class="unidades-4">'
-      +'<span class="unidad"><b>Año:</b> '+esc(partes.anio)+' &nbsp;│&nbsp; <b>Mes:</b> '+esc(partes.mes)+' &nbsp;│&nbsp; <b>Día:</b> '+esc(partes.dia)+'</span>'
+      +'<span class="unidad"><b>Fecha jornada:</b> '+esc(partes.anio)+'/'+esc(partes.mes)+'/'+esc(partes.diaNum)+' ('+esc(partes.diaNombre)+')</span>'
       +'<span class="unidad"><b>Equipo combinado (Placa):</b> '+esc(id.placa)+'</span>'
       +'<span class="unidad"><b>Jornada:</b> '+esc(id.jornada)+'</span>'
       +'<span class="unidad"><b>Barrio:</b> '+esc(id.barrio)+'</span>'
