@@ -1597,7 +1597,7 @@ function fccAbrirExcepcional(){
  const q=window.FCC_CONSULTA_AUTORIZADA;
  if(!q){toast('Primero consulta fecha, placa, turno y barrio');return;}
  window.FCC_FILTROS={...q};
- fccExDatos={operador:'',horaInicio:'',horaFin:'',agua:'',novedad:'',diametro:'',material:'',confirmacion:false};
+ fccExDatos={operador:'',horaInicio:'',horaFin:'',agua:'',lodos:'',novedad:'',diametro:'',material:'',confirmacion:false};
  fccTramosExV9=[{codigo:'',mhArriba:'',mhAbajo:'',longitud:'',observacion:''}];
  document.getElementById('v932-modal').classList.add('on');fccPintarExV9();
 }
@@ -1612,9 +1612,9 @@ function fccPintarExV9(){
  <div class="v932-card"><strong>Datos documentales</strong>
  <label>Nombre del operador *</label><input data-fcc-ex="operador" value="${e(d.operador)}" autocomplete="off">
  <div class="v932-row"><div><label>Hora de inicio *</label><input type="time" data-fcc-ex="horaInicio" value="${e(d.horaInicio)}"></div><div><label>Hora final *</label><input type="time" data-fcc-ex="horaFin" value="${e(d.horaFin)}"></div></div>
- <label>Agua utilizada (m³) *</label><input type="number" min="0" step="0.01" data-fcc-ex="agua" value="${e(d.agua)}">
- <label>Novedad / observación general</label><textarea data-fcc-ex="novedad">${e(d.novedad)}</textarea></div>
- <div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro *</label><select data-fcc-ex="diametro"><option value="">Seleccionar…</option>${['150','200','250','300','400','+400'].map(x=>'<option value="'+x+'"'+(String(d.diametro||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div><div><label>Material *</label><select data-fcc-ex="material"><option value="">Seleccionar…</option>${['PVC','Gres','Asbesto-cemento','HF','Concreto'].map(x=>'<option value="'+x+'"'+(String(d.material||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div></div></div>
+  <label>Agua utilizada (m³) *</label><input type="number" min="0" step="0.01" data-fcc-ex="agua" value="${e(d.agua)}">
+ <label>Descarga de lodos</label><select data-fcc-ex="lodos"><option value=""${!d.lodos?' selected':''}>Sin dato</option><option value="DENTRO"${d.lodos==='DENTRO'?' selected':''}>Dentro</option><option value="FUERA"${d.lodos==='FUERA'?' selected':''}>Fuera</option></select>
+ <label>Novedad / observación general</label><textarea data-fcc-ex="novedad">${e(d.novedad)}</textarea></div> <div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro *</label><select data-fcc-ex="diametro"><option value="">Seleccionar…</option>${['150','200','250','300','400','+400'].map(x=>'<option value="'+x+'"'+(String(d.diametro||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div><div><label>Material *</label><select data-fcc-ex="material"><option value="">Seleccionar…</option>${['PVC','Gres','Asbesto-cemento','HF','Concreto'].map(x=>'<option value="'+x+'"'+(String(d.material||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div></div></div>
  ${fccTramosExV9.map((t,i)=>`<div class="v932-card"><strong>Tramo adicional ${i+1} · APTO CCTV: SÍ</strong>
    <div class="v932-row"><div><label>Código del tramo *</label><input data-fcc-i="${i}" data-fcc-key="codigo" value="${e(t.codigo)}"></div><div><label>Longitud *</label><input type="number" min="0.01" step="0.01" data-fcc-i="${i}" data-fcc-key="longitud" value="${e(t.longitud)}"></div></div>
    <div class="v932-row"><div><label>C arriba *</label><input data-fcc-i="${i}" data-fcc-key="mhArriba" value="${e(t.mhArriba)}" pattern="${pat}" title="${tip}" placeholder="C1-01" maxlength="8"></div><div><label>C abajo *</label><input data-fcc-i="${i}" data-fcc-key="mhAbajo" value="${e(t.mhAbajo)}" pattern="${pat}" title="${tip}" placeholder="C1-02" maxlength="8"></div></div>
