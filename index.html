@@ -1604,16 +1604,22 @@ function fccAbrirExcepcional(){
 function fccExEsc(x){return v8Esc(String(x??''));}
 function fccPintarExV9(){
  const sh=document.getElementById('v932-sheet'),e=fccExEsc,q=window.FCC_FILTROS||{},d=fccExDatos;
+ const pat='^C\\d{1,2}-\\d{1,4}$';
+ const tip='Formato: C + 1-2 dígitos + "-" + 1-4 dígitos. Ej: C1-01, C12-1234.';
  sh.innerHTML=`<h3>Ingreso excepcional · FALC-XX</h3>
  <div class="v932-card"><strong>Identidad consultada al motor (bloqueada)</strong><div class="v932-meta">Fecha: ${e(q.fecha)} · Placa: ${e(q.placa)} · Jornada: ${e(q.jornada)} · Barrio: ${e(q.barrio)}</div></div>
- <div class="hint">Declaración excepcional sujeta a verificación humana. No sustituye una jornada existente. El envío será recibido por el motor y quedará pendiente de verificación. No se considera aprobado.</div>
+ <div class="hint">Declaración excepcional sujeta a verificación humana. No sustituye una jornada existente.</div>
  <div class="v932-card"><strong>Datos documentales</strong>
  <label>Nombre del operador *</label><input data-fcc-ex="operador" value="${e(d.operador)}" autocomplete="off">
  <div class="v932-row"><div><label>Hora de inicio *</label><input type="time" data-fcc-ex="horaInicio" value="${e(d.horaInicio)}"></div><div><label>Hora final *</label><input type="time" data-fcc-ex="horaFin" value="${e(d.horaFin)}"></div></div>
  <label>Agua utilizada (m³) *</label><input type="number" min="0" step="0.01" data-fcc-ex="agua" value="${e(d.agua)}">
  <label>Novedad / observación general</label><textarea data-fcc-ex="novedad">${e(d.novedad)}</textarea></div>
  <div class="v932-card"><strong>Datos comunes del conjunto</strong><div class="v932-row"><div><label>Diámetro *</label><select data-fcc-ex="diametro"><option value="">Seleccionar…</option>${['150','200','250','300','400','+400'].map(x=>'<option value="'+x+'"'+(String(d.diametro||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div><div><label>Material *</label><select data-fcc-ex="material"><option value="">Seleccionar…</option>${['PVC','Gres','Asbesto-cemento','HF','Concreto'].map(x=>'<option value="'+x+'"'+(String(d.material||'')===x?' selected':'')+'>'+x+'</option>').join('')}</select></div></div></div>
- ${fccTramosExV9.map((t,i)=>`<div class="v932-card"><strong>Tramo adicional ${i+1} · APTO CCTV: SÍ</strong><div class="v932-row"><div><label>Código del tramo *</label><input data-fcc-i="${i}" data-fcc-key="codigo" value="${e(t.codigo)}"></div><div><label>ML limpiados *</label><input type="number" min="0.01" step="0.01" data-fcc-i="${i}" data-fcc-key="longitud" value="${e(t.longitud)}"></div></div><div class="v932-row"><div><label>MH arriba *</label><input data-fcc-i="${i}" data-fcc-key="mhArriba" value="${e(t.mhArriba)}"></div><div><label>MH abajo *</label><input data-fcc-i="${i}" data-fcc-key="mhAbajo" value="${e(t.mhAbajo)}"></div></div><label>Observación del tramo</label><textarea data-fcc-i="${i}" data-fcc-key="observacion">${e(t.observacion)}</textarea><button type="button" class="v932-cancel" onclick="fccQuitarExV9(${i})">Quitar tramo</button></div>`).join('')}
+ ${fccTramosExV9.map((t,i)=>`<div class="v932-card"><strong>Tramo adicional ${i+1} · APTO CCTV: SÍ</strong>
+   <div class="v932-row"><div><label>Código del tramo *</label><input data-fcc-i="${i}" data-fcc-key="codigo" value="${e(t.codigo)}"></div><div><label>Longitud *</label><input type="number" min="0.01" step="0.01" data-fcc-i="${i}" data-fcc-key="longitud" value="${e(t.longitud)}"></div></div>
+   <div class="v932-row"><div><label>C arriba *</label><input data-fcc-i="${i}" data-fcc-key="mhArriba" value="${e(t.mhArriba)}" pattern="${pat}" title="${tip}" placeholder="C1-01" maxlength="8"></div><div><label>C abajo *</label><input data-fcc-i="${i}" data-fcc-key="mhAbajo" value="${e(t.mhAbajo)}" pattern="${pat}" title="${tip}" placeholder="C1-02" maxlength="8"></div></div>
+   <label>Observación del tramo</label><textarea data-fcc-i="${i}" data-fcc-key="observacion">${e(t.observacion)}</textarea>
+   <button type="button" class="v932-cancel" onclick="fccQuitarExV9(${i})">Quitar tramo</button></div>`).join('')}
  <button type="button" class="v932-action" onclick="fccAgregarExV9()">+ Agregar otro tramo</button>
  <div class="v932-card"><strong>Visto bueno</strong><div class="hint">Pendiente. Exclusivo del responsable autorizado; no lo diligencia el contratista.</div></div>
  <label style="display:flex;gap:9px;align-items:flex-start"><input type="checkbox" id="fcc-ex-confirmar" ${d.confirmacion?'checked':''} style="width:auto;margin-top:3px">Confirmo que terminé de ingresar los tramos y que la información corresponde a la intervención declarada.</label>
@@ -1621,7 +1627,7 @@ function fccPintarExV9(){
  <div id="fcc-ex-estado" role="alert" aria-live="assertive" class="hint">No se ha enviado la declaración.</div>
  <button type="button" class="v932-cancel" onclick="v932CerrarModal()">Cerrar</button>`;
  sh.querySelectorAll('[data-fcc-i]').forEach(el=>el.addEventListener('input',()=>{fccTramosExV9[Number(el.dataset.fccI)][el.dataset.fccKey]=el.value;}));
- sh.querySelectorAll('[data-fcc-ex]').forEach(el=>el.addEventListener('input',()=>{fccExDatos[el.dataset.fccEx]=el.value;}));
+ sh.querySelectorAll('[data-fcc-ex]').forEach(el=>{const h=()=>{fccExDatos[el.dataset.fccEx]=el.value;};el.addEventListener('input',h);el.addEventListener('change',h);});
  sh.querySelector('#fcc-ex-confirmar').addEventListener('change',ev=>fccExDatos.confirmacion=ev.target.checked);
 }
 function fccAgregarExV9(){fccTramosExV9.push({codigo:'',mhArriba:'',mhAbajo:'',longitud:'',observacion:''});fccPintarExV9();}
