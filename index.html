@@ -2091,26 +2091,47 @@ function falcPropagarComun(){
 
  const tramos=[];
  document.querySelectorAll('#v932-sheet .v932-card').forEach(function(card){
-  const inpCod=card.querySelector('input[data-campo="codigo"]');
-  if(!inpCod)return;
-  const codigo=inpCod.value.trim();
-  if(!codigo)return;
+  // Saltar el bloque común (no tiene campos de tramo)
   const selD=card.querySelector('select[data-campo="diametro"]');
   const selM=card.querySelector('select[data-campo="material"]');
   const mhA=card.querySelector('input[data-campo="mhArriba"]');
   const mhB=card.querySelector('input[data-campo="mhAbajo"]');
+  if(!mhA && !mhB && !selD && !selM)return;
+
+  // Obtener código: primero input (tramo adicional), luego título (tramo operador)
+  let codigo='';
+  const inpCod=card.querySelector('input[data-key="codigo"]');
+  if(inpCod){
+   codigo=inpCod.value.trim();
+  } else {
+   const titulo=card.querySelector('.v932-title');
+   if(titulo){
+    const m=(titulo.textContent||'').match(/Tramo\s+(.+)/i);
+    if(m)codigo=m[1].trim();
+   }
+  }
+  if(!codigo)return;
+
+  // ML: input (adicional) o 0 (operador sin campo)
+  let ml=0;
+  const inpMl=card.querySelector('input[data-key="ml"]');
+  if(inpMl){ml=Number(inpMl.value)||0;}
+
   tramos.push({
    codigo:codigo,
    mhArriba:(mhA?mhA.value:'').trim().toUpperCase(),
    mhAbajo:(mhB?mhB.value:'').trim().toUpperCase(),
    diametro:(selD?selD.value:di).trim(),
    material:(selM?selM.value:ma).trim(),
-   ml:Number(card.querySelector('input[data-key="ml"]')?.value||0)||0,
+   ml:ml,
    observacion:''
   });
  });
 
- if(!tramos.length){estado.textContent='⛔ No hay tramos para guardar.';return;}
+ if(!tramos.length){
+  estado.textContent='⛔ No hay tramos para guardar. Verifica que hayas abierto una jornada con tramos.';
+  return;
+ }
 
  const win=window.open('','_blank');
  if(win){
@@ -2130,7 +2151,10 @@ function falcPropagarComun(){
    tramos:tramos,
    actionId:'FCT-'+Date.now()
   });
-  if(!r||r.ok!==true||!r.idRegistro)throw Error(r?.error||'El Motor no confirmó el guardado');
+  if(!r||r.ok!==true||!r.idRegistro){
+   if(win)win.close();
+   throw Error(r?.error||'El Motor no confirmó el guardado');
+  }
 
   estado.textContent='✅ Guardado · Referencia: '+r.idRegistro;
   btn.textContent='Guardado';btn.disabled=true;
@@ -2159,6 +2183,14 @@ function falcPropagarComun(){
     aptoCCTV:'SI',
     observacion:t.observacion
    }))
+  }, r.idRegistro, 'COMPLEMENTO TÉCNICO', win);
+
+ }catch(e){
+  if(win)win.close();
+  estado.textContent='⛔ '+e.message;
+  btn.disabled=false;
+ }
+}
   }, r.idRegistro, 'COMPLEMENTO TÉCNICO', win);
 
  }catch(e){
